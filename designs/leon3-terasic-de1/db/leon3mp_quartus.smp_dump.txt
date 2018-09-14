@@ -1,0 +1,81 @@
+
+State Machine - |leon3mp|leon3s:u0|leon3x:leon3x0|proc3:p0|mmu_cache:c0mmu|mmu_dcache:dcache0|r.dstate
+Name r.dstate.loadpend r.dstate.dblwrite r.dstate.asi_idtag r.dstate.wflush r.dstate.wtrans r.dstate.wwrite r.dstate.rtrans r.dstate.wread r.dstate.idle 
+r.dstate.idle 0 0 0 0 0 0 0 0 0 
+r.dstate.wread 0 0 0 0 0 0 0 1 1 
+r.dstate.rtrans 0 0 0 0 0 0 1 0 1 
+r.dstate.wwrite 0 0 0 0 0 1 0 0 1 
+r.dstate.wtrans 0 0 0 0 1 0 0 0 1 
+r.dstate.wflush 0 0 0 1 0 0 0 0 1 
+r.dstate.asi_idtag 0 0 1 0 0 0 0 0 1 
+r.dstate.dblwrite 0 1 0 0 0 0 0 0 1 
+r.dstate.loadpend 1 0 0 0 0 0 0 0 1 
+
+State Machine - |leon3mp|leon3s:u0|leon3x:leon3x0|proc3:p0|mmu_cache:c0mmu|mmu_icache:icache0|r.istate
+Name r.istate.stop r.istate.streaming r.istate.trans r.istate.idle 
+r.istate.idle 0 0 0 0 
+r.istate.trans 0 0 1 1 
+r.istate.streaming 0 1 0 1 
+r.istate.stop 1 0 0 1 
+
+State Machine - |leon3mp|leon3s:u0|leon3x:leon3x0|proc3:p0|iu3:iu|r.x.rstate
+Name r.x.rstate.dsu2 r.x.rstate.dsu1 r.x.rstate.trap r.x.rstate.run 
+r.x.rstate.run 0 0 0 0 
+r.x.rstate.trap 0 0 1 1 
+r.x.rstate.dsu1 0 1 0 1 
+r.x.rstate.dsu2 1 0 0 1 
+
+State Machine - |leon3mp|apbuart:uart1|r.txstate
+Name r.txstate.stopbit r.txstate.cparity r.txstate.data r.txstate.idle 
+r.txstate.idle 0 0 0 0 
+r.txstate.data 0 0 1 1 
+r.txstate.cparity 0 1 0 1 
+r.txstate.stopbit 1 0 0 1 
+
+State Machine - |leon3mp|apb_keymill_vlog:cp3|vlog_keymill:v0|state
+Name state.State_Halt state.State_Gen_Output state.State_Warm_Up state.State_Load_IV state.State_Load_Key state.State_RST 
+state.State_RST 0 0 0 0 0 0 
+state.State_Load_Key 0 0 0 0 1 1 
+state.State_Load_IV 0 0 0 1 0 1 
+state.State_Warm_Up 0 0 1 0 0 1 
+state.State_Gen_Output 0 1 0 0 0 1 
+state.State_Halt 1 0 0 0 0 1 
+
+State Machine - |leon3mp|apbuart:uart1|r.rxstate
+Name r.rxstate.stopbit r.rxstate.cparity r.rxstate.data r.rxstate.startbit r.rxstate.idle 
+r.rxstate.idle 0 0 0 0 0 
+r.rxstate.startbit 0 0 0 1 1 
+r.rxstate.data 0 0 1 0 1 
+r.rxstate.cparity 0 1 0 0 1 
+r.rxstate.stopbit 1 0 0 0 1 
+
+State Machine - |leon3mp|ahbuart:dcom0|dcom_uart:dcom_uart0|r.rxstate
+Name r.rxstate.stopbit r.rxstate.data r.rxstate.startbit r.rxstate.idle 
+r.rxstate.idle 0 0 0 0 
+r.rxstate.startbit 0 0 1 1 
+r.rxstate.data 0 1 0 1 
+r.rxstate.stopbit 1 0 0 1 
+
+State Machine - |leon3mp|apb_keymill_vlog:cp3|vlog_keymill:v0|LR_Keymill:uut|state
+Name state.State_Halt state.State_Gen_Output state.State_Warm_Up state.State_Load_IV state.State_Load_Key state.State_RST 
+state.State_RST 0 0 0 0 0 0 
+state.State_Load_Key 0 0 0 0 1 1 
+state.State_Load_IV 0 0 0 1 0 1 
+state.State_Warm_Up 0 0 1 0 0 1 
+state.State_Gen_Output 0 1 0 0 0 1 
+state.State_Halt 1 0 0 0 0 1 
+
+State Machine - |leon3mp|ahbuart:dcom0|dcom:dcom0|r.state
+Name r.state.write2 r.state.write1 r.state.read2 r.state.read1 r.state.addr1 r.state.idle 
+r.state.idle 0 0 0 0 0 0 
+r.state.addr1 0 0 0 0 1 1 
+r.state.read1 0 0 0 1 0 1 
+r.state.read2 0 0 1 0 0 1 
+r.state.write1 0 1 0 0 0 1 
+r.state.write2 1 0 0 0 0 1 
+
+State Machine - |leon3mp|ahbuart:dcom0|dcom_uart:dcom_uart0|r.txstate
+Name r.txstate.stopbit r.txstate.data r.txstate.idle 
+r.txstate.idle 0 0 0 
+r.txstate.data 0 1 1 
+r.txstate.stopbit 1 0 1 

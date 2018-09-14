@@ -1,0 +1,500 @@
+   41  cd ..
+   42  lks
+   43  ls
+   44  cd grlib-gpl-1.3.7-b4144/designs/
+   45  ls
+   46  cd de2-115/
+   47  ls
+   48  make xgrlib
+   49  make xgrlib
+   50  cd ..
+   51  cd leon3-terasic-de2-115/
+   52  make xgrlib
+   53  cd ../leon3-terasic-de2-115b/
+   54  make xgrlib
+   55  cd ..
+   56  cd ../leon3-terasic-de2-115b/
+   57  cd leon3-terasic-de2-115b/
+   58  make xgrlib
+   59  cd seslab@Eve /home/grlib-gpl-1.3.7-b4144/designs
+   60  $ cd ../leon3-terasic-de2-115b/
+   61  bash: cd: ../leon3-terasic-de2-115b/: No such file or directory
+   62  seslab@Eve /home/grlib-gpl-1.3.7-b4144/designs
+   63  $ cd leon3-terasic-de2-115b/
+   64  seslab@Eve /home/grlib-gpl-1.3.7-b4144/designs/leon3-terasic-de2-115b
+   65  $ make xgrlib
+   66  seslab@Eve /home/grlib-gpl-1.3.7-b4144/designs/leon3-terasic-de2-115b
+   67  $ cd seslab@Eve /home/grlib-gpl-1.3.7-b4144/designs
+   68  $ cd ../leon3-terasic-de2-115b/
+   69  bash: cd: ../leon3-terasic-de2-115b/: No such file or directory
+   70  seslab@Eve /home/grlib-gpl-1.3.7-b4144/designs
+   71  $ cd leon3-terasic-de2-115b/
+   72  seslab@Eve /home/grlib-gpl-1.3.7-b4144/designs/leon3-terasic-de2-115b
+   73  $ make xgrlib
+   74  seslab@Eve /home/grlib-gpl-1.3.7-b4144/designs/leon3-terasic-de2-115b
+   75  $ cd /home/grlib-gpl-1.3.4-b4140/designs/leon3-terasic-de2-115
+   76  cd ..
+   77  cd /home
+   78  cd grlib-gpl-1.3.4-b4140/designs/leon3-terasic-de2-115/
+   79  make xgrlib
+   80  cd ..
+   81  cd ..
+   82  cd ..
+   83  cd grlib-gpl-1.3.7-b4144/designs/de2-115/
+   84  make xconfig
+   85  make xgrlib
+   86  cd ..
+   87  rm -r de2-115/
+   88  cd de2-115/
+   89  make xgrlib
+   90  make xgrlib
+   91  make xgrlib
+   92  make xgrlib
+   93  cd ../../grlib-gpl-1.1.0-b4108_Spartan_500
+   94  ls
+   95  cd designs/
+   96  ls
+   97  cd leon3-digilent-xc3s500e
+   98  make xgrlib
+   99  grmon -xilusb -u
+  100  grmon -xilusb -u
+  101  exit
+  102  grmon -xilusb -u
+  103  grmon --help
+  104  grmon -ftdi -u
+  105  grmon -xilusb -u
+  106  grmon -xilusb -u
+  107  grmon -xilusb -u
+  108  grmon -xilusb -u
+  109  grmon -xilusb -u
+  110  sparc-elf-gcc -o hello hello.c
+  111  cd /cygdrive/c/cygwin/home/grlib-gpl-1.3.7-b4144/designs/leon3-sakura-g
+  112  sparc-elf-gcc -o hello hello.c
+  113  grmon -xilusb -u
+  114  grmon -xilusb -u
+  115  grmon -xilusb -u
+  116  grmon -xilusb -u
+  117  grmon -xilusb -u
+  118  grmon -xilusb -u
+  119  grmon -xilusb -u
+  120  grmon -xilusb -u
+  121  grmon -xilusb -u
+  122  grmon -xilusb -u
+  123  grmon -xilusb -u
+  124  grmon -xilusb -u
+  125  grmon -xilusb -u
+  126  grmon -xilusb -u
+  127  grmon -xilusb -u
+  128  sparc-elf-gcc -o hello -Ttext=0xa0000000 hello.c
+  129  grmon -xilusb -u
+  130  grmon -xilusb -u
+  131  sparc-elf-gcc -o hello -Ttext=0x40000000 hello.c
+  132  grmon -xilusb -u
+  133  sparc-elf-gcc -o hello -Ttext=0x8e000000 -Tdata=0x8f000000 hello.c
+  134  grmon -xilusb -u
+  135  grmon -xilusb -u
+  136  grmon -xilusb -u
+  137  sparc-elf-gcc -o hello -Ttext=0x40000000 hello.c
+  138  grmon -xilusb -u
+  139  grmon -xilusb -u
+  140  sparc-elf-objdump.exe -d hello
+  141  sparc-elf-objdump.exe -d -o hello.S hello
+  142  sparc-elf-objdump.exe -d hello > hello.S
+  143  grmon -xilusb -u
+  144  grmon -xilusb -u
+  145  grmon -xilusb -u
+  146  sparc-elf-gcc -o hello -Ttext=0x8e000000 -Tdata=0x8f000000 hello.c
+  147  grmon -xilusb -u -stack 0x8f00fff0
+  148  grmon -xilusb -u
+  149  grmon -xilusb -u
+  150  sparc-elf-gcc -o hello -Ttext=0x4e000000 -Tdata=0x4f000000 hello.c
+  151  tsim-leon3.exe 
+  152  tsim-leon3.exe 
+  153  grmon -xilusb -u
+  154  grmon -xilusb -u
+  155  grmon -xilusb -u
+  156  grmon -xilusb -u
+  157  grmon -xilusb -u
+  158  grmon -xilusb -u
+  159  grmon -xilusb -u
+  160  grmon -xilusb -u
+  161  grmon -xilusb -u
+  162  grmon -xilusb -u
+  163  grmon -xilusb -u
+  164  make soft
+  165  make prom
+  166  make prom
+  167  sparc-elf-gcc gcc -qnoambapp  prom.o   -o prom
+  168  sparc-elf-gcc -qnoambapp  prom.o   -o prom
+  169  make ahbrom
+  170  make prom
+  171  sparc-elf-gcc -qnoambapp  prom.o   -o prom
+  172  make soft
+  173  make ahbrom.vhd
+  174  make ahbrom
+  175  sparc-elf-gcc -o hello -Ttext=0x8e000000 -Tdata=0x8f000000 -Tstack=0x8f00fff0 hello.c
+  176  sparc-elf-gcc -o hello -Ttext=0x8e000000 -Tdata=0x8f000000 hello.c
+  177  grmon -xilusb -u
+  178  sparc-elf-gcc -o hello -Ttext=0x4e000000 -Tdata=0x4f000000 hello.c
+  179  grmon -xilusb -u
+  180  grmon -xilusb -u
+  181  grmon -xilusb -u
+  182  grmon -xilusb -u
+  183  grmon -xilusb -u
+  184  sparc-elf-gcc -o hello hello.c
+  185  grmon -xilusb -u
+  186  grmon -xilusb -u
+  187  grmon -xilusb -u
+  188  grmon -xilusb -u
+  189  modelsim
+  190  grmon -xilusb -u
+  191  grmon -xilusb -u
+  192  grmon -xilusb -u
+  193  grmon -xilusb -u
+  194  grmon -xilusb -u
+  195  grmon -xilusb -u
+  196  grmon -xilusb -u
+  197  grmon -xilusb -u
+  198  grmon -xilusb -u
+  199  grmon -xilusb -u
+  200  grmon -xilusb -u
+  201  modelsim
+  202  modelsim
+  203  pid
+  204  top
+  205  modelsim
+  206  pwd
+  207  cd /cygdrive/c/cygwin/home/grlib-gpl-1.3.7-b4144/designs/leon3-sakura-g
+  208  grmon -xilusb -u
+  209  grmon -xilusb -u -stack=0x8f000000
+  210  grmon -xilusb -u -stack 0x8f000000
+  211  grmon -xilusb -u
+  212  make help
+  213  make soft
+  214  make soft
+  215  make ahbrom.vhd
+  216  make ahbrom.vhd
+  217  sparc-elf-objcopy -O binary prom.exe ahbrom.bin
+  218  ./ahbrom ahbrom.bin ahbrom.vhd
+  219   sparc-elf-gcc -msoft-float -qsvt -Ttext=0x8e000000 -Tdata=0x8f000000 -o hello
+  220  sparc-elf-gcc -msoft-float -qsvt -o hello hello.exe
+  221  sparc-elf-gcc -msoft-float -qsvt -o hello hello.c
+  222  sparc-elf-gcc -msoft-float -qsvt -o hello -Ttext=0x8e000000 -Tdata=0x8f000000 hello.c
+  223  pwd
+  224  cd /cygdrive/c/cygwin/home/grlib-gpl-1.3.7-b4144/designs/leon3-sakura-g
+  225  sparc-elf-gcc -msoft-float -qsvt -o hello -Ttext=0x8e000000 -Tdata=0x8f000000 hello.c
+  226  sparc-elf-gcc -msoft-float -qsvt -o hello -Ttext=0x8e000000 -Tdata=0x8f000000 hello.c -lsmall -lm
+  227  sparc-elf-readelf.exe hello
+  228  sparc-elf-readelf.exe hello -S
+  229  sparc-elf-readelf.exe hello -a
+  230  sparc-elf-readelf.exe hello 
+  231  tsim-leon3.exe 
+  232  grmon -xilusb -u
+  233  grmon -xilusb -u -stack 0x8f00fff0
+  234  sparc-elf-objcopy.exe -O binary out.rom ahbrom.bin
+  235  mkprom2 -dump -freq 48 -leon3 -mqsvt -msoft-float -nocomp -nosram -o out.rom -stack 0x8f00fff0 -v hello
+  236  sparc-elf-objcopy.exe -O binary out.rom ahbrom.bin
+  237  ahbrom.exe ahbrom.bin ahbrom.vhd
+  238  ./ahbrom.exe ahbrom.bin ahbrom.vhd
+  239  grmon -xilusb -u
+  240  grmon -xilusb -u
+  241  grmon -xilusb -u -stack 0x8f00fff0
+  242  grmon -xilusb -u -stack 0x8f00fff0
+  243  grmon -xilusb -u -stack 0x8f00fff0
+  244  tsim-leon3.exe out.rom
+  245  grmon -xilusb -u
+  246  sparc-elf-objdump -d hello2.S hello
+  247  sparc-elf-objdump -d hello > hello2.S
+  248  grmon -xilusb -u
+  249  sparc-elf-gcc -msoft-float -qsvt -Ttext=0x8e000000 -Tdata=0x8f000000 -o hello.elf hello.c -lsmall -lm
+  250  ls | grep hello
+  251  mkprom2 -checksvt -dump -qsvt -stack 0x8f00fff0 -v -nocomp hello.elf -O out.rom -msoft-float
+  252  sparc-elf-objdump -d prom.out > proomout.S
+  253  grmon -xilusb -u
+  254  grmon -xilusb -u
+  255  sparc-elf-objdump -d out.rom > outrom.S
+  256  mkprom2 -checksvt -dump -qsvt -stack 0x8f00fff0 -v -nocomp hello.elf -O out.rom -msoft-float
+  257  sparc-elf-objcopy -O binary prom.out ahbrom.bin
+  258  ./ahbrom.exe ahbrom.bin ahbrom.vhd
+  259  grmon -xilusb -u
+  260  grmon -xilusb -u -stack 0x8f00fff0
+  261  tsim-leon3.exe prom.out
+  262  Astep
+  263  tsim-leon3.exe hello.elf
+  264  tsim-leon3.exe hello.elf -stack 0x8f00fff0
+  265  tsim-leon3.exe hello.o -stack 0x8f00fff0
+  266  tsim-leon3.exe hello -stack 0x8f00fff0
+  267  tsim-leon3.exe hello -stack 0x8f007ff0
+  268  tsim-leon3.exe prom.out
+  269  Astep 10
+  270  tsim-leon3.exe prom.out
+  271  grmon -xilusb -u -stack 0x8f00fff0
+  272  sparc-elf-mkprom
+  273  sparc-elf-ld --verbose
+  274  sparc-elf-ld --help
+  275  sparc-elf-ld --verbose
+  276  sparc-elf-ld --verbose
+  277  sparc-elf-ld --verbose
+  278  sparc-elf-ld --verbose
+  279  pwd
+  280  cd /cygdrive/c/cygwin/home/grlib-gpl-1.3.7-b4144/designs/leon3-sakura-g
+  281  make xgrlib
+  282  cd /cygdrive/c/cygwin/home/grlib-gpl-1.3.7-b4144/designs/leon3-sakura-g
+  283  make xgrlib
+  284  cd ../de2-115bil/
+  285  make xgrlib
+  286  ls
+  287  cd ..
+  288  cd grlib-gpl-1.3.7-b4144/designs/leon3-sakura-g/
+  289  ls
+  290  grmon
+  291  grmon --man
+  292  grmon --help
+  293  cd ..
+  294  cd grlib-gpl-1.3.7-b4144/designs/leon3-sakura-g/
+  295  grmon-eval-2.0.61/win32/bin/grmon.exe 
+  296  grmon-eval-2.0.61/win32/bin/grmon.exe --help
+  297  grmon-eval-2.0.61/win32/bin/grmon.exe -digilent
+  298  grmon-eval-2.0.61/win32/bin/grmon.exe -xilusb
+  299  cd ../grlib-gpl-1.3.7-b4144/designs/leon3-sakura-g
+  300  grmon -xilusb
+  301  sparc-elf-gcc hello.c -o hello.elf
+  302  grmon -xilusb
+  303  sparc-elf-gcc hello.c -o hello.elf
+  304  grmon -xilusb
+  305  grmon -xilusb
+  306  grmon -xilusb
+  307  grmon -xilusb
+  308  grmon -xilusb
+  309  make xgrlib
+  310  export DISPLAY=:0
+  311  make xgrlib
+  312  make xgrlib
+  313  grmon -xilusb
+  314  grmon -xilusb
+  315  grmon -xilusb
+  316  grmon -xilusb
+  317  grmon -xilusb
+  318  sparc-elf-gcc hello.c -Ttext=0xa0000000 -Tdata=0xa000a7f0 -o hello.elf
+  319  grmon -xilusb
+  320  grmon -xilusb -u
+  321  grmon -xilusb -u
+  322  grmon -xilusb -u
+  323  grmon -xilusb -u
+  324  grmon -xilusb -u
+  325  grmon -xilusb -u
+  326  grmon -xilusb -u
+  327  grmon -xilusb -u
+  328  top
+  329  grmon -xilusb -u
+  330  pwd
+  331  cd ../grlib-gpl-1.3.7-b4144/designs/leon3-sakura-g/
+  332  grmon -xilusb -u
+  333  grmon -xilusb -u
+  334  exit
+  335  cd ../grlib-gpl-1.3.7-b4144/designs/leon3-sakura-g/
+  336  grmon -xilusb -u
+  337  sparc-elf-gcc hello.c -Ttext=0xa0000000 -Tdata=0xa000a7f0 -o hello.elf
+  338  sparc-elf-gcc hello.c -Ttext=0xa0000000 -Tdata=0xa000aff0 -o hello.elf
+  339  grmon -xilusb -u
+  340  grmon -xilusb -u
+  341  grmon -xilusb -u
+  342  grmon -xilusb -u
+  343  grmon -xilusb -u
+  344  grmon -xilusb -u
+  345  grmon -xilusb -u
+  346  grmon -xilusb -u
+  347  grmon -xilusb -u
+  348  grmon -xilusb -u
+  349  sparc-elf-objdump -help
+  350  sparc-elf-readelf.exe hello.elf
+  351  sparc-elf-readelf.exe -a hello.elf
+  352  sparc-elf-objdump.exe hello.elf
+  353  sparc-elf-objdump.exe -D hello.elf hello.s
+  354  sparc-elf-objdump.exe -D hello.elf > hello.s
+  355  sparc-elf-objdump.exe -D hello.elf > hello.s
+  356  grmon -xilusb -u
+  357  sparc-elf-gcc hello.c -Ttext=0xa0000000 -Tdata=0xa000aff0 -o hello.elf
+  358  grmon -xilusb -u
+  359  exit
+  360  cd ../grlib-gpl-1.3.7-b4144/designs/leon3-sakura-g/
+  361  grmon -xilusb -u
+  362  grmon -xilusb -u
+  363  grmon -xilusb -u
+  364  grmon -xilusb -u
+  365  sparc-elf-gcc hello.c -Ttext=0xa0000000 -Tdata=0xa000aff0 -o hello.elf
+  366  grmon -xilusb -u
+  367  sparc-elf-gcc hello.c -Ttext=0xa0000000 -Tdata=0xa000aff0 -o hello.elf
+  368  grmon -xilusb -u
+  369  grmon -xilusb -u
+  370  grmon -xilusb -u
+  371  grmon -xilusb -u
+  372  grmon -xilusb -u
+  373  grmon -xilusb -u
+  374  grmon -xilusb -u
+  375  top
+  376  grmon -xilusb -u
+  377  cd ../grlib-gpl-1.3.7-b4144/designs/leon3-sakura-g/
+  378  grmon -xilusb -u
+  379  sparc-elf-gcc hello.c -Ttext=0xa0000000 -Tdata=0xa000aff0 -o hello.elf
+  380  grmon -xilusb -u
+  381  sparc-elf-gcc hello.c -Ttext=0xa0000000 -Tdata=0xa000aff0 -o hello.elf
+  382  grmon -xilusb -u
+  383  sparc-elf-gcc hello.c -Ttext=0xa0000000 -Tdata=0xa000aff0 -o hello.elf
+  384  grmon -xilusb -u
+  385  sparc-elf-gcc hello.c -Ttext=0xa0000000 -Tdata=0xa000aff0 -o hello.elf
+  386  sparc-elf-gcc hello.c -Ttext=0xa0000000 -Tdata=0xa000aff0 -o hello.elf
+  387  grmon -xilusb -u
+  388  grmon -xilusb -u
+  389  grmon -xilusb -u
+  390  sparc-elf-gcc hello.c -Ttext=0xa0000000 -Tdata=0xa000aff0 -o hello.elf
+  391  grmon -xilusb -u
+  392  sparc-elf-objdump.exe -D hello.elf > hello.s
+  393  grmon -xilusb -u
+  394  grmon -xilusb -u
+  395  grmon -xilusb -u
+  396  grmon -xilusb -u
+  397  grmon -xilusb -u
+  398  grmon -xilusb -u
+  399  grmon -xilusb -u
+  400  grmon -xilusb -u
+  401  grmon -xilusb -u
+  402  grmon -xilusb -u
+  403  grmon -xilusb -u
+  404  grmon -xilusb -u
+  405  cd ../grlib-gpl-1.3.7-b4144/designs/leon3-sakura-g/
+  406  grmon -xilusb -u
+  407  inst
+  408  grmon -xilusb -u
+  409  grmon -xilusb -u
+  410  exit
+  411  cd ../grlib-gpl-1.3.7-b4144/designs/leon3-sakura-g/
+  412  grmon -xilusb -u
+  413  grmon -xilusb -u
+  414  grmon -xilusb -u
+  415  inst
+  416  grmon -xilusb -u
+  417  grmon -xilusb -u
+  418  grmon -xilusb -u
+  419  grmon -xilusb -u
+  420  grmon -xilusb -u
+  421  grmon -xilusb -u
+  422  grmon -xilusb -u
+  423  grmon -xilusb -u
+  424  grmon -xilusb -u
+  425  grmon -xilusb -u
+  426  grmon -xilusb -u
+  427  grmon -xilusb -u
+  428  grmon -xilusb -u
+  429  grmon -xilusb -u
+  430  grmon -xilusb -u
+  431  grmon -xilusb -u
+  432  grmon -xilusb -u
+  433  grmon -xilusb -u
+  434  grmon -xilusb -u
+  435  grmon -xilusb -u
+  436  grmon -xilusb -u
+  437  grmon -xilusb -u
+  438  cd ..
+  439  cd grlib-gpl-1.3.7-b4144/designs/leon3-sakura-g/
+  440  grmon -xilusb -u
+  441  grmon -xilusb -u
+  442  grmon -xilusb -u
+  443  grmon -xilusb -u
+  444  grmon -xilusb -u
+  445  grmon -xilusb -u
+  446  grmon -xilusb -u
+  447  grmon -xilusb -u
+  448  cd ../grlib-gpl-1.3.7-b4144/designs/leon3-sakura-g/
+  449  grmon -xilusb -u
+  450  grmon -xilusb -u
+  451  cd ../grlib-gpl-1.3.7-b4144/designs/leon3-sakura-g/
+  452  sparc-elf-gcc hello.c -Ttext=0xa0000000 -Tdata=0xa000aff0 -o hello.elf
+  453  grmon -xilusb -u
+  454  grmon -xilusb -u
+  455  grmon -xilusb -u
+  456  grmon -xilusb -u
+  457  grmon -xilusb -u
+  458  grmon -xilusb -u
+  459  grmon -xilusb -u
+  460  grmon -xilusb -u
+  461  grmon -xilusb -u
+  462  grmon -xilusb -u
+  463  grmon -xilusb -u
+  464  grmon -xilusb -u
+  465  grmon -xilusb -u
+  466  grmon -xilusb -u
+  467  grmon -xilusb -u
+  468  grmon -xilusb -u
+  469  grmon -xilusb -u
+  470  grmon -xilusb -u
+  471  grmon -xilusb -u
+  472  grmon -xilusb -u
+  473  grmon -xilusb -u
+  474  grmon -xilusb -u
+  475  exit
+  476  open /dev/ttyS2
+  477  cd /dev/ttyS2
+  478  man mintty
+  479  ls
+  480  cd ..
+  481  ls
+  482  cd ..
+  483  ls
+  484  cd cygdrive
+  485  ls
+  486  cd c
+  487  cd Program Files
+  488  cd /home/grlib-gpl-1.3.7-b4144/designs/leon3-sakura-g
+  489   grmon -xilusb -u
+  490   grmon -xilusb -u
+  491   grmon -uart
+  492   grmon -uart
+  493   grmon -uart /dev/ttyS2
+  494   grmon -uart /dev
+  495   grmon -uart /dev/ttyS0
+  496  /dev/ttyS2
+  497  ea
+  498  exit
+  499  cd C:\cygwin\home\grlib-gpl-1.3.7-b4144\designs\leon3-sakura-g\openssl\crypto\aes
+  500  cd home\grlib-gpl-1.3.7-b4144\designs\leon3-sakura-g\openssl\crypto\aes
+  501  ls
+  502  cd home
+  503  home
+  504  C:\cygwin\home\grlib-gpl-1.3.7-b4144\designs\leon3-sakura-g\openssl\crypto\aes
+  505  cd /home/grlib-gpl-1.3.7-b4144/designs/leon3-sakura-g
+  506  cd openssl/crypto/aes
+  507  sparc-elfgcc
+  508  sparc-elf-gcc
+  509  sparc-elf-gcc -msoft-float -g -O2 AES_tbox.c -o tbox.elf
+  510  sparc-elf-objdump -d tbox.elf > tbox.s
+  511  sparc-elf-gcc -wall -msoft-float -g -O2 AES_tbox.c -o tbox.elf
+  512  sparc-elf-gcc -mv8 -mflat -msoft-float -g -O2 AES_tbox.c -o tbox.elf
+  513* 
+  514  sparc-elf-objdump -s tbox.elf > tbox.s
+  515  sparc-elf-gcc -s -O2 AES_tbox.c -o tbox.elf
+  516  sparc-elf-objdump -d tbox.elf > tbox.s
+  517  sparc-elf-gcc -O2 AES_tbox.c -o tbox.elf
+  518  sparc-elf-objdump -d tbox.elf > tbox.s
+  519  sparc-elf-gcc -tdata=0xa0000000 -O2 AES_tbox.c -o tbox.elf
+  520  sparc-elf-gcc -Tdata=0xa0000000 -O2 AES_tbox.c -o tbox.elf
+  521  sparc-elf-objdump -d tbox.elf > tbox.s
+  522  sparc-elf-gcc -msoft-float -g -O2 AES_tbox.c -o tbox.elf
+  523  sparc-elf-mkprom tbox.elf -o tbox.exe -Tdata=0xa0000000
+  524  sparc-elf-gcc -Tdata=0xa0000000 -msoft-float -g -O2 AES_tbox.c -o tbox.elf
+  525  sparc-elf-objdump -d tbox.elf > tbox.s
+  526  sparc-elf-gcc -Ttext=0xa0000000 -msoft-float -g -O2 AES_tbox.c -o tbox.elf
+  527  sparc-elf-objdump -d tbox.elf > tbox.s
+  528  sparc-elf-gcc -Ttext=0xa0000000 -msoft-float -g -O2 AES_tbox.c -o tbox.elf
+  529  sparc-elf-objdump -d tbox.elf > tbox.s
+  530  sparc-elf-gcc -Ttext=0xa0000000 -msoft-float -g -O2 AES_tbox.c -o tbox.elf
+  531  sparc-elf-objdump -d tbox.elf > tbox.s
+  532  sparc-elf-gcc -Ttext=0xa0000000 -msoft-float -g -O2 AES_tbox.c -o tbox.elf
+  533  sparc-elf-objdump -d tbox.elf > tbox.s
+  534  sparc-elf-gcc -Ttext=0xa0000000 -msoft-float -g -O2 AES_tbox.c -o tbox.elf
+  535  sparc-elf-objdump -d tbox.elf > tbox.s
+  536  sparc-elf-gcc -Ttext=0xa0000000 -msoft-float -g -O2 AES_tbox.c -o tbox.elf
+  537  sparc-elf-objdump -d tbox.elf > tbox.s
+  538  hist
+  539  history
+  540  history > commandline_history.txt

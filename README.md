@@ -15,6 +15,8 @@ Steps to synthesize and run the famev2 design on the FPGA:
 4. Grab generated bitstream(.sof for Altera, .bit for SakuraG) and program on the board using platform specific programmer.
 5. SakuraG board needs the SPI memory of the Control FPGA to be programmed (for clock generation) along with the main FPGA. The design subdirectory contains a .mcs file for this.
 
+Precompiled bitstreams are provided in the design directories.
+
 
 UART Connections:
 The FPGA communicate with GRMON using the AHBUART(Debug UART). The UART connections are mapped to FPGA pins as follows:
