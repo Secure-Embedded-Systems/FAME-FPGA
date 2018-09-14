@@ -17,6 +17,9 @@ Steps to synthesize and run the famev2 design on the FPGA:
 
 Precompiled bitstreams are provided in the design directories.
 
+Clock and Reset:
+For Altera boards: Reset is mapped to KEY[3] and 50MHz oscillator clock is used for the Famev2 clock.
+For SAKURA-G board: Reset is mapped to SW[3] and 48MHz oscillator clock is fed to ControlFPGA which divides the clock by two. Divided clock is provided to MainFPGA using SMA connector(M_CLK_EXT0_P).
 
 UART Connections:
 The FPGA communicate with GRMON using the AHBUART(Debug UART). The UART connections are mapped to FPGA pins as follows:
