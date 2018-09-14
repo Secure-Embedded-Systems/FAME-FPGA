@@ -20,4 +20,4 @@ UART Connections:
 The FPGA communicate with GRMON using the AHBUART(Debug UART). The UART connections are mapped to FPGA pins as follows:
 1. DE2-115 board: AHB_UART_RXD:GPIO[7], AHB_UART_TXD:GPIO[9], APB_UART_RXD:UART_RXD (DB9 connector), APB_UART_TXD:UART_TXD (DB9 connector)
 2. DE1 SoC board: AHB_UART_RXD:GPIO_0[7], AHB_UART_TXD:GPIO_0[9], APB_UART_RXD:GPIO_0[27], APB_UART_TXD:GPIO_0[29]
-3. SAKURA-G board: AHB_UART_RXD:
+3. SAKURA-G board: AHB_UART_RXD:GPIO[2], AHB_UART_TXD:GPIO[4], APB_UART_RXD:GPIO[6], APB_UART_TXD:GPIO[8]
