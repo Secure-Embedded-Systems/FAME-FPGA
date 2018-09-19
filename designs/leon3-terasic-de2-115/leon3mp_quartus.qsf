@@ -329,7 +329,6 @@ set_location_assignment PIN_AE21 -to triggerout[0]
 set_location_assignment PIN_AF25 -to triggerout[1]
 set_location_assignment PIN_AC22 -to triggerout[2]
 set_location_assignment PIN_AE22 -to triggerout[3]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to errorn
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to gpio[7]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to gpio[6]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to gpio[5]
@@ -338,13 +337,11 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to gpio[3]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to gpio[2]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to gpio[1]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to gpio[0]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to gpio
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to triggerout[3]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to triggerout[2]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to triggerout[1]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to triggerout[0]
 set_location_assignment PIN_Y23 -to dsuen
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to triggerout
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to alarm1_emsensor
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to alarm2_aesenc
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to alarm3_aesdec
@@ -361,7 +358,6 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to led[3]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to led[2]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to led[1]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to led[0]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to led
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to switch[7]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to switch[6]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to switch[5]
@@ -370,7 +366,6 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to switch[3]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to switch[2]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to switch[1]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to switch[0]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to switch
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to alarmout
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to alarmin
 set_location_assignment PIN_J17 -to error
