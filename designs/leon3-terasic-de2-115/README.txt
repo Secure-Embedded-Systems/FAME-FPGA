@@ -43,9 +43,9 @@ Pin Mapping:
 | alarm2_aesenc   | Alarm Out from AES encrypt             | PIN_AF15 | GPIO[13]         |
 | alarm1_emsensor | Alarm Out from emsensor                | PIN_AF24 | GPIO[14]         |
 | triggerout[0]   | TriggerOut from leon3                  | PIN_AE21 | GPIO[15]         |
-| triggerout[1]   | TriggerOut from leon4                  | PIN_AF25 | GPIO[16]         |
-| triggerout[2]   | TriggerOut from leon5                  | PIN_AC22 | GPIO[17]         |
-| triggerout[3]   | TriggerOut from leon6                  | PIN_AE22 | GPIO[18]         |
+| triggerout[1]   | TriggerOut from leon3                  | PIN_AF25 | GPIO[16]         |
+| triggerout[2]   | TriggerOut from leon3                  | PIN_AC22 | GPIO[17]         |
+| triggerout[3]   | TriggerOut from leon3                  | PIN_AE22 | GPIO[18]         |
 | dsuen           | Enable/Disable DSU                     | PIN_Y23  | SW[17]           |
 | boot_select     | Boot from 0:AHBROM, 1:SPI              | PIN_AA22 | SW[15]           |
 | error           | Error Signal from Leon3                | PIN_J17  | LEDR[8]          |
