@@ -1,5 +1,8 @@
 Design Directory for port of FAMEv2 to Altera DE1 SOC board
 
+Synthesis can be triggered using command "make quartus"
+A precompiled bitstream(leon3mp_quartus.sof) is provided.
+
 Pin Mapping:
 
 
