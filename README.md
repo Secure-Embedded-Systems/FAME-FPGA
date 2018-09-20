@@ -13,15 +13,6 @@ Steps to synthesize and run the famev2 design on the FPGA:
 2. For Altera designs trigger synthesis using command "make quartus".
 3. For SakuraG board trigger synthesis using command "make ise".
 4. Grab generated bitstream(.sof for Altera, .bit for SakuraG) and program on the board using platform specific programmer.
-5. SakuraG board needs the SPI memory of the Control FPGA to be programmed (for clock generation) along with the main FPGA. The design subdirectory contains a .mcs file for this.
 
 Precompiled bitstreams are provided in the design directories.
-Detailed Pin mapping and functions of pins provided inside the each FPGA port subdirectory. 
-
-
-
-For SAKURA-G board: Reset is mapped to SW[3] and 48MHz oscillator clock is fed to ControlFPGA which divides the clock by two. Divided clock is provided to MainFPGA using SMA connector(M_CLK_EXT0_P).
-
-
-
-3. SAKURA-G board: AHB_UART_RXD:GPIO[2], AHB_UART_TXD:GPIO[4], APB_UART_RXD:GPIO[6], APB_UART_TXD:GPIO[8]
+Detailed Pin mapping and functions of pins provided inside the each FPGA port subdirectory.
