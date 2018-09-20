@@ -1,5 +1,8 @@
 Design Directory for port of FAMEv2 to Altera DE2-115 board
 
+Synthesis can be triggered using command "make quartus"
+A precompiled bitstream(leon3mp_quartus.sof) is provided. 
+
 Pin Mapping:
 
 | FAMEv2 pin      | Function                               | DE2 pin  | DE2 pin function |
