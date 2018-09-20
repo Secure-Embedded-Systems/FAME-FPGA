@@ -1,8 +1,0 @@
-[Device]
-Family = ;
-PartNumber = XC6SLX75-2csg484;
-Package = ;
-PartType = XC6SLX75;
-Speed = -2;
-Operating_condition = COM;
-Status = Production;

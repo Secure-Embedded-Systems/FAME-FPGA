@@ -1,7 +1,0 @@
-INFILE=/home/tarun/fame_v2/designs/leon3-sakura/leon3mp.ncd
-OUTFILE=/home/tarun/fame_v2/designs/leon3-sakura/leon3mp.bit
-FAMILY=Spartan6
-PART=xc6slx75-2csg484
-WORKINGDIR=/home/tarun/fame_v2/designs/leon3-sakura
-LICENSE=WebPack
-USER_INFO=179922939_0_0_509
