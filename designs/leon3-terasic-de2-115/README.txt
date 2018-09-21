@@ -17,20 +17,6 @@ Pin Mapping:
 | DebugUart_TX    | AHBUART transmit                       | PIN_AE16 | GPIO[7]          |
 | PeriphUart_RX   | APBUART receive                        | PIN_AE24 | GPIO[27]         |
 | PeriphUart_TX   | APBUART transmit                       | PIN_AE26 | GPIO[29]         |
-| switch[0]       | Switch                                 | PIN_AB28 | SW[0]            |
-| switch[1]       | Switch                                 | PIN_AC28 | SW[1]            |
-| switch[2]       | Switch                                 | PIN_AC27 | SW[2]            |
-| switch[3]       | Switch                                 | PIN_AD27 | SW[3]            |
-| switch[4]       | Switch                                 | PIN_AB27 | SW[4]            |
-| switch[5]       | Switch                                 | PIN_AC26 | SW[5]            |
-| switch[6]       | Switch                                 | PIN_AD26 | SW[6]            |
-| switch[7]       | Switch                                 | PIN_AB26 | SW[7]            |
-| led[2]          | LED                                    | PIN_E19  | LEDR[2]          |
-| led[3]          | LED                                    | PIN_F21  | LEDR[3]          |
-| led[4]          | LED                                    | PIN_F18  | LEDR[4]          |
-| led[5]          | LED                                    | PIN_E18  | LEDR[5]          |
-| led[6]          | LED                                    | PIN_J19  | LEDR[6]          |
-| led[7]          | LED                                    | PIN_H19  | LEDR[7]          |
 | dsuact          | Check if DSU is active                 | PIN_H15  | LEDR[17]         |
 | dsubre          | External Break signal for DSU          | PIN_Y24  | SW[16]           |
 | gpio[0]         | GPIO                                   | PIN_AB22 | GPIO[0]          |
