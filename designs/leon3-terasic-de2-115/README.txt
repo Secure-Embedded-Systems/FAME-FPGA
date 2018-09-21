@@ -1,46 +1,39 @@
 Design Directory for port of FAMEv2 to Altera DE2-115 board
 
-Synthesis can be triggered using command "make quartus"
-A precompiled bitstream(leon3mp_quartus.sof) is provided. 
+Synthesis can be triggered using command "make quartus" 
 
 Pin Mapping:
 
-| FAMEv2 pin      | Function                               | DE2 pin  | DE2 pin function |
-|-----------------|----------------------------------------|----------|------------------|
-| clkout          | Clock out from Leon3 for observation   | PIN_AE23 | SMA_CLKOUT       |
-| RESETN          | Global Reset                           | PIN_R24  | KEY[3]           |
-| clk             | Input clock                            | PIN_Y2   | CLOCK_50         |
-| alarmout        | Alarm Out from leon3 if fault detected | PIN_H17  | LEDR[13]         |
-| led[0]          | LED mapped to debugUART activity       | PIN_G19  | LEDR[0]          |
-| led[1]          | LED mapped to debugUART activity       | PIN_F19  | LEDR[1]          |
-| DebugUart_RX    | AHBUART receive                        | PIN_AE15 | GPIO[9]          |
-| DebugUart_TX    | AHBUART transmit                       | PIN_AE16 | GPIO[7]          |
-| PeriphUart_RX   | APBUART receive                        | PIN_AE24 | GPIO[27]         |
-| PeriphUart_TX   | APBUART transmit                       | PIN_AE26 | GPIO[29]         |
-| dsuact          | Check if DSU is active                 | PIN_H15  | LEDR[17]         |
-| dsubre          | External Break signal for DSU          | PIN_Y24  | SW[16]           |
-| gpio[0]         | GPIO                                   | PIN_AB22 | GPIO[0]          |
-| gpio[1]         | GPIO                                   | PIN_AC15 | GPIO[1]          |
-| gpio[2]         | GPIO                                   | PIN_AB21 | GPIO[2]          |
-| gpio[3]         | GPIO                                   | PIN_Y17  | GPIO[3]          |
-| gpio[4]         | GPIO                                   | PIN_AC21 | GPIO[4]          |
-| gpio[5]         | GPIO                                   | PIN_Y16  | GPIO[5]          |
-| gpio[6]         | GPIO                                   | PIN_AD21 | GPIO[6]          |
-| gpio[7]         | GPIO                                   | PIN_AD15 | GPIO[8]          |
-| alarmin         | Input Alarm for leon3                  | PIN_AA23 | SW[14]           |
-| alarm3_aesdec   | Alarm Out from AES decrypt             | PIN_AD19 | GPIO[12]         |
-| alarm2_aesenc   | Alarm Out from AES encrypt             | PIN_AF15 | GPIO[13]         |
-| alarm1_emsensor | Alarm Out from emsensor                | PIN_AF24 | GPIO[14]         |
-| triggerout[0]   | TriggerOut from leon3                  | PIN_AE21 | GPIO[15]         |
-| triggerout[1]   | TriggerOut from leon3                  | PIN_AF25 | GPIO[16]         |
-| triggerout[2]   | TriggerOut from leon3                  | PIN_AC22 | GPIO[17]         |
-| triggerout[3]   | TriggerOut from leon3                  | PIN_AE22 | GPIO[18]         |
-| dsuen           | Enable/Disable DSU                     | PIN_Y23  | SW[17]           |
-| boot_select     | Boot from 0:AHBROM, 1:SPI              | PIN_AA22 | SW[15]           |
-| error           | Error Signal from Leon3                | PIN_J17  | LEDR[8]          |
+| FAMEv2 pin      | Function                               | DE2 pin  |
+|-----------------|----------------------------------------|----------|
+| resetn          | Global Reset                           | KEY[3]   |
+| clk             | Input clock                            | CLOCK_50 |
+| alarmout        | Alarm Out from leon3 if fault detected | LEDR[13] |
+| DebugUart_RX    | AHBUART receive                        | GPIO[35] |
+| DebugUart_TX    | AHBUART transmit                       | GPIO[33] |
+| PeriphUart_RX   | APBUART receive                        | GPIO[29] |
+| PeriphUart_TX   | APBUART transmit                       | GPIO[31] |
+| dsuact          | Check if DSU is active                 | LEDR[17] |
+| dsubre          | External Break signal for DSU          | SW[16]   |
+| gpio[0]         | GPIO                                   | GPIO[0]  |
+| gpio[1]         | GPIO                                   | GPIO[1]  |
+| gpio[2]         | GPIO                                   | GPIO[2]  |
+| gpio[3]         | GPIO                                   | GPIO[3]  |
+| gpio[4]         | GPIO                                   | GPIO[4]  |
+| gpio[5]         | GPIO                                   | GPIO[5]  |
+| gpio[6]         | GPIO                                   | GPIO[6]  |
+| gpio[7]         | GPIO                                   | GPIO[7]  |
+| alarmin         | Input Alarm for leon3                  | SW[14]   |
+| alarm3_aesdec   | Alarm Out from AES decrypt             | GPIO[12] |
+| alarm2_aesenc   | Alarm Out from AES encrypt             | GPIO[13] |
+| alarm1_emsensor | Alarm Out from emsensor                | GPIO[14] |
+| triggerout[0]   | TriggerOut from leon3                  | GPIO[17] |
+| triggerout[1]   | TriggerOut from leon3                  | GPIO[15] |
+| triggerout[2]   | TriggerOut from leon3                  | GPIO[13] |
+| triggerout[3]   | TriggerOut from leon3                  | GPIO[11] |
+| dsuen           | Enable/Disable DSU                     | SW[17]   |
+| errorn          | Error Signal from Leon3                | LEDR[8]  |
 
-
-GRMON output
 
 $ ./grmon.exe -u -uart //./com7.
 
@@ -67,9 +60,6 @@ $ ./grmon.exe -u -uart //./com7.
   Multi-processor Interrupt Ctrl.      Cobham Gaisler
   General Purpose I/O port             Cobham Gaisler
   Modular Timer Unit                   Cobham Gaisler
-  Contributed core 2                   Various contributions
-  Unknown device                       Various contributions
-  Unknown device                       Various contributions
   Unknown device                       Various contributions
   Unknown device                       Various contributions
 
@@ -105,19 +95,12 @@ info sys
   irqmp0    Cobham Gaisler  Multi-processor Interrupt Ctrl.
             APB: 80000200 - 80000300
   gpio0     Cobham Gaisler  General Purpose I/O port
-            APB: 80000300 - 80000400
+            APB: 80000500 - 80000600
   gptimer0  Cobham Gaisler  Modular Timer Unit
             APB: 80000600 - 80000700
             IRQ: 8
             32-bit scalar, 5 * 32-bit timers, divisor 50
-  adev11    Various contributions  Contributed core 2
-            APB: 80011000 - 80012000
-  adev12    Various contributions  Unknown device
-            APB: 80012000 - 80013000
-  adev13    Various contributions  Unknown device
+  adev11    Various contributions  Unknown device
             APB: 80013000 - 80014000
-  adev14    Various contributions  Unknown device
+  adev12    Various contributions  Unknown device
             APB: 80014000 - 80015000
-  adev15    Various contributions  Unknown device
-            APB: 80015000 - 80016000
-
