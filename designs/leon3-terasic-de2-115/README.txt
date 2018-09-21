@@ -1,5 +1,7 @@
 Design Directory for port of FAMEv2 to Altera DE2-115 board
 
+Top Level file is LEON3_DE2115.v
+Quartus Project file is LEON3_DE2115_quartus.qpf
 Synthesis can be triggered using command "make quartus" 
 
 Pin Mapping:
