@@ -13,14 +13,10 @@ Pin Mapping:
 | PeriphUart_RX   | APBUART receive                        | B8           | GPIO[6]               |
 | PeriphUart_TX   | APBUART transmit                       | A9           | GPIO[8]               |
 | RESETN          | Global Reset                           | D3           | SW3                   |
-| switch[0]       | Switch                                 | B2           | SW5.1                 |
-| switch[1]       | Switch                                 | B1           | SW5.2                 |
-| switch[2]       | Switch                                 | C1           | SW5.3                 |
-| switch[3]       | Switch                                 | D2           | SW5.4                 |
 | dsuen           | Enable/Disable DSU                     | E1           | SW5.6                 |
 | dsubre          | External Break signal for DSU          | F2           | SW5.7                 |
-| led[0]          | LED                                    | M2           | M_LED_0               |
-| led[1]          | LED                                    | N1           | M_LED_1               |
+| led[0]          | LED mapped to DebugUart activity       | M2           | M_LED_0               |
+| led[1]          | LED mapped to DebugUart activity       | N1           | M_LED_1               |
 | dsuact          | Check if DSU is active                 | P1           | M_LED_2               |
 | error           | Error Signal from Leon3                | R1           | M_LED_4               |
 | gpio[0]         | GPIO                                   | A4           | GPIO[1]               |
