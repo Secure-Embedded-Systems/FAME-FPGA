@@ -1,6 +1,6 @@
 include .config
 GRLIB=../..
-TOP=LEON3-DE2115
+TOP=LEON3_DE2115
 BOARD=terasic-de2-ep4c115
 include $(GRLIB)/boards/$(BOARD)/Makefile.inc
 DEVICE=$(PART)-$(PACKAGE)$(SPEED)
