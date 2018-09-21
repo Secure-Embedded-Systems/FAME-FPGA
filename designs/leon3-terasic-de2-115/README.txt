@@ -67,6 +67,8 @@ $ ./grmon.exe -u -uart //./com7.
 
   Use command 'info sys' to print a detailed report of attached cores
 
+GRMON Output:
+
 grmon2> info sys
 info sys
   cpu0      Cobham Gaisler  LEON3 SPARC V8 Processor
