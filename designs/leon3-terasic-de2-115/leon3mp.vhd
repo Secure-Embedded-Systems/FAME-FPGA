@@ -374,7 +374,7 @@ begin
    port map( 		 rst			=>rstn,
 			 clk			=>clkm,
 			 apbi			=>apbi,
-			 apbo			=>apbo(3),
+			 apbo			=>apbo(5),
 			 gpioi			=>gpioi,
 			 gpioo			=>gpioo);
    pio_pads : for i in 0 to 7 generate

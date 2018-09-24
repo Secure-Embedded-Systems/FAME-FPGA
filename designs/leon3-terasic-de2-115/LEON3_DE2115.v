@@ -31,6 +31,8 @@ module LEON3_DE2115(
    wire 					txd1;
    wire [3:0] 				triggerout;
    wire 					wdogn;
+   wire						led8inv;
+   wire						led13inv;
 
 	leon3mp top(.clk   (CLOCK_50),
 		    .resetn(KEY[3]),
@@ -38,14 +40,14 @@ module LEON3_DE2115(
 		    .DebugUart_tx (dsutx),
 		    .DebugUart_rx (dsurx),
 		    .dsuact(LEDR[17]),
-			 .dsuen(SW[17]),
-			 .dsubre (SW[16]),
+		    .dsuen(SW[17]),
+		    .dsubre (SW[16]),
 		    .PeriphUart_rx  (rxd1),
 		    .PeriphUart_tx  (txd1),
 		    .gpio  (gpio),
-		    .alarmout(LEDR[13]),
+		    .alarmout(LEDR[14]),
 		    .triggerout(triggerout),
-		    .wdogn(wdogn));
+		    .wdogn(led13inv));
 
    assign LEDR[8]     = ~led8inv;
    
@@ -59,13 +61,11 @@ module LEON3_DE2115(
    assign LEDG[2]      = txd1;
    
    assign rxd1         = GPIO[29];
-   assign LEDG[3]      = GPIO[29];
-   
+   assign LEDG[3]      = GPIO[29];  
+   assign LEDR[13]	= ~led13inv;
    assign LEDR[7:0]    = gpio;
    assign {GPIO[7],GPIO[6],GPIO[5],GPIO[4],GPIO[3],GPIO[2],GPIO[1],GPIO[0]} = gpio;
 
    assign {GPIO[11],GPIO[13],GPIO[15],GPIO[17]} = triggerout;
-			
-			
 
 endmodule
