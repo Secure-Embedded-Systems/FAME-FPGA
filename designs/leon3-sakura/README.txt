@@ -5,39 +5,31 @@ A precompiled bitstream(leon3mp.bit) is provided.
 
 Pin Mapping:
 
-| FAMEv2 pin      | Function                               | SAKURA-G pin | SAKURA-G pin function |
-|-----------------|----------------------------------------|--------------|-----------------------|
-| clk             | Input clock                            | J1           | M_CLK_OSC             |
-| DebugUart_RX    | AHBUART receive                        | A5           | GPIO[2]               |
-| DebugUart_TX    | AHBUART transmit                       | A6           | GPIO[4]               |
-| PeriphUart_RX   | APBUART receive                        | B8           | GPIO[6]               |
-| PeriphUart_TX   | APBUART transmit                       | A9           | GPIO[8]               |
-| RESETN          | Global Reset                           | D3           | SW3                   |
-| dsuen           | Enable/Disable DSU                     | E1           | SW5.6                 |
-| dsubre          | External Break signal for DSU          | F2           | SW5.7                 |
-| led[0]          | LED mapped to DebugUart activity       | M2           | M_LED_0               |
-| led[1]          | LED mapped to DebugUart activity       | N1           | M_LED_1               |
-| dsuact          | Check if DSU is active                 | P1           | M_LED_2               |
-| error           | Error Signal from Leon3                | R1           | M_LED_4               |
-| gpio[0]         | GPIO                                   | A4           | GPIO[1]               |
-| gpio[1]         | GPIO                                   | B6           | GPIO[3]               |
-| gpio[2]         | GPIO                                   | A7           | GPIO[5]               |
-| gpio[3]         | GPIO                                   | A8           | GPIO[7]               |
-| gpio[4]         | GPIO                                   | C5           | GPIO[11]              |
-| gpio[5]         | GPIO                                   | C6           | GPIO[12]              |
-| gpio[6]         | GPIO                                   | C7           | GPIO[13]              |
-| gpio[7]         | GPIO                                   | C17          | GPIO[14]              |
-| triggerout[0]   | TriggerOut from leon3                  | A11          | GPIO[15]              |
-| triggerout[1]   | TriggerOut from leon3                  | A12          | GPIO[16]              |
-| triggerout[2]   | TriggerOut from leon3                  | B12          | GPIO[17]              |
-| triggerout[3]   | TriggerOut from leon3                  | A13          | GPIO{18]              |
-| clkout          | Clock out from Leon3 for observation   | P3           | GPIO_1 [12]           |
-| boot_select     | Boot from 0:AHBROM, 1:SPI              | D1           | SW5.5                 |
-| alarmin         | Input Alarm for leon3                  | F1           | SW5.8                 |
-| alarm3_aesdec   | Alarm Out from AES decrypt             | A15          | GPIO[23]              |
-| alarm2_aesenc   | Alarm Out from AES encrypt             | B14          | GPIO[22]              |
-| alarm1_emsensor | Alarm Out from emsensor                | A14          | GPIO[21]              |
-| alarmout        | Alarm Out from leon3 if fault detected | P2           | M_LED_3               |
+| FAMEv2 pin      | Function                               | SAKURA-G pin function |
+|-----------------|----------------------------------------|-----------------------|
+| clk             | Input clock                            | M_CLK_OSC div by 2    |
+| DebugUart_RX    | AHBUART receive                        | GPIO[31]              |
+| DebugUart_TX    | AHBUART transmit                       | GPIO[32]              |
+| PeriphUart_RX   | APBUART receive                        | GPIO[27]              |
+| PeriphUart_TX   | APBUART transmit                       | GPIO[28]              |
+| RESETN          | Global Reset                           | SW3                   |
+| dsuen           | Enable/Disable DSU                     | SW5.8                 |
+| dsubre          | External Break signal for DSU          | SW5.7                 |
+| errorn          | Error Signal from Leon3                | M_LED_10              |
+| gpio[0]         | GPIO                                   | GPIO[1]               |
+| gpio[1]         | GPIO                                   | GPIO[2]               |
+| gpio[2]         | GPIO                                   | GPIO[3]               |
+| gpio[3]         | GPIO                                   | GPIO[4]               |
+| gpio[4]         | GPIO                                   | GPIO[5]               |
+| gpio[5]         | GPIO                                   | GPIO[6]               |
+| gpio[6]         | GPIO                                   | GPIO[7]               |
+| gpio[7]         | GPIO                                   | GPIO[8]               |
+| triggerout[0]   | TriggerOut from leon3                  | GPIO[17]              |
+| triggerout[1]   | TriggerOut from leon3                  | GPIO[15]              |
+| triggerout[2]   | TriggerOut from leon3                  | GPIO[13]              |
+| triggerout[3]   | TriggerOut from leon3                  | GPIO[11]              |
+| boot_select     | Boot from 0:AHBROM, 1:SPI              | SW5.1                 |
+| alarmout        | Alarm Out from leon3 if fault detected | GPIO[18]              |
 
 GRMON output:
 $ ./grmon.exe -u -uart //./com7.
