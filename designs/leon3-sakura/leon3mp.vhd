@@ -2,23 +2,8 @@
 --  LEON3 Demonstration design
 --  Copyright (C) 2013 Aeroflex Gaisler
 ------------------------------------------------------------------------------
---  This file is a part of the GRLIB VHDL IP LIBRARY
---  Copyright (C) 2003 - 2008, Gaisler Research
---  Copyright (C) 2008 - 2014, Aeroflex Gaisler
---
---  This program is free software; you can redistribute it and/or modify
---  it under the terms of the GNU General Public License as published by
---  the Free Software Foundation; either version 2 of the License, or
---  (at your option) any later version.
---
---  This program is distributed in the hope that it will be useful,
---  but WITHOUT ANY WARRANTY; without even the implied warranty of
---  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
---  GNU General Public License for more details.
---
---  You should have received a copy of the GNU General Public License
---  along with this program; if not, write to the Free Software
---  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
+--  FAME v2 MAPPING TO SAKURA-G
+--  by Secure Embedded Systems Virginia Tech
 ------------------------------------------------------------------------------
 
 library ieee;
@@ -44,13 +29,9 @@ library esa;
 use esa.memoryctrl.all;
 use work.config.all;
 
-library coprocessors; -- bilgiday coprocessor example
-use coprocessors.examplevhd.all; -- bilgiday coprocessor example
-use coprocessors.aes.all; -- AES Coprocessor example
-use coprocessors.aes_em.all; -- Chinmay AES_EM coprocessor 
-use coprocessors.emsensor.all; -- Chinmay EM Sensor coprocessor 
-use coprocessors.keymill.all;   --Taha Keymill
-
+library coprocessors; 
+use coprocessors.aes.all; 
+use coprocessors.keymill.all;
 
 entity leon3mp is
   generic (
@@ -58,8 +39,8 @@ entity leon3mp is
     memtech  : integer := CFG_MEMTECH;
     padtech  : integer := CFG_PADTECH;
     clktech  : integer := CFG_CLKTECH;
-    disas    : integer := CFG_DISAS;     -- Enable disassembly to console
-    dbguart  : integer := CFG_DUART;     -- Print UART on console
+    disas    : integer := CFG_DISAS;    
+    dbguart  : integer := CFG_DUART;   
     pclow    : integer := CFG_PCLOW
     );
   port (
@@ -67,15 +48,15 @@ entity leon3mp is
     clkout             : out    std_ulogic; -- output clock same as input clock
    
    -- Buttons & LEDs
-    RESETN    : in    std_ulogic; -- Reset button
+    resetn    : in    std_ulogic; -- Reset button
     led             : out   std_logic_vector(3 downto 0);
     gpio             : inout   std_logic_vector(7 downto 0);
     switch             : in   std_logic_vector(3 downto 0);
 	
-       dsuen        : in std_ulogic;     -- switch(2)
-    dsubre       : in std_ulogic;     -- switch(6)
-    dsuact       : out std_ulogic;    -- led(6)
-    error       : out std_ulogic;    -- led(7)
+    dsuen        : in std_ulogic;     
+    dsubre       : in std_ulogic;    
+    dsuact       : out std_ulogic;  
+    errorn       : out std_ulogic;  
     
      -- RS232 APB Uart 
      PeriphUart_RX : in std_logic;
@@ -91,15 +72,15 @@ entity leon3mp is
     spi_sck     : out std_ulogic;
     spi_csn  : out std_ulogic;
 
-    -- changed trigger_out to 4 bits
     alarm1_emsensor: out std_ulogic;
     alarm2_aesenc: out std_ulogic;
     alarm3_aesdec: out std_ulogic;
-	 triggerout: out std_logic_vector(3 downto 0);
+    triggerout: out std_logic_vector(3 downto 0);
     alarmin : in std_ulogic;
 	 alarmout : out std_ulogic;
 	extsave : in std_ulogic;
-     boot_select: in std_ulogic
+     boot_select: in std_ulogic;
+    wdogn           : out   std_logic
   );
 end;
 
@@ -178,21 +159,18 @@ begin
 
   cgi.pllctrl <= "00";
   cgi.pllrst <= rstraw;
---  rst0 : rstgen generic map (acthigh => 1)
---    port map (RESETN, clkm, lock, rstn, rstraw);
---  lock <= cgo.clklock;
-
---alarm_combined(0) <= '0';
-alarm_combined(0) <= alarmin;
-alarm_combined(1) <= '0';
-alarm_combined(2) <= '0';
-alarm_combined(3) <= '0';
+  alarm_combined(0) <= alarmin;
+  alarm_combined(1) <= '0';
+  alarm_combined(2) <= '0';
+  alarm_combined(3) <= '0';
 ---------------------------------------------------------------------- 
 ---  AHB CONTROLLER --------------------------------------------------
 ----------------------------------------------------------------------
 
   ahb0 : ahbctrl
-    generic map (ioen => 1, nahbm => 4, nahbs => 8)
+    generic map (ioen => 1,
+		 nahbm => 4,
+		 nahbs => 8)
     port map (rstn, clkm, ahbmi, ahbmo, ahbsi, ahbso);
 
 ----------------------------------------------------------------------
@@ -202,39 +180,38 @@ alarm_combined(3) <= '0';
   -- LEON3 processor
   u0 : leon3s
     generic map (hindex=>0, 
-				 fabtech=>fabtech, 
-				 memtech=>memtech,
-				 nwindows=>8, 
-				 dsu=>CFG_DSU,       
-				 fpu=>0,       
-				 v8=>0,        
-				 cp=>0,        
-				 mac=>0,       
-				 pclow=>CFG_PCLOW,    
-				 notag=>CFG_NOTAG,    
-				 nwp=>CFG_NWP,       
-				 icen=>CFG_ICEN,      
-				 irepl=>CFG_IREPL,     
-				 isets=>CFG_ISETS,     
-				 ilinesize=>CFG_ILINE,
-				 isetsize=>CFG_ISETSZ,  
-				 isetlock=>CFG_ILOCK,  
-				 dcen=>CFG_DCEN,      
-				 drepl=>CFG_DREPL,     
-				 dsets=>CFG_DSETS,     
-				 dlinesize=>CFG_DLINE, 
-				 dsetsize=>CFG_DSETSZ,  
-				 dsetlock=>CFG_DLOCK,  
-				 dsnoop=>CFG_DSNOOP,    
-				 ilram=>CFG_ILRAMEN,     
-				 ilramsize=>CFG_ILRAMSZ, 
-				 ilramstart=>CFG_ILRAMADDR,
-				 dlram=>CFG_DLRAMEN, 
-				 dlramsize=>CFG_DLRAMSZ,
-				 dlramstart=>CFG_DLRAMADDR,
-				 mmuen=>CFG_MMUEN,     
+		 fabtech=>fabtech, 
+	         memtech=>memtech,
+	         nwindows=>8, 
+	         dsu=>CFG_DSU,       
+	         fpu=>0,       
+	         v8=>0,        
+	         cp=>0,        
+	         mac=>0,       
+	         pclow=>CFG_PCLOW,    
+	         notag=>CFG_NOTAG,    
+	         nwp=>CFG_NWP,       
+	         icen=>CFG_ICEN,      
+	         irepl=>CFG_IREPL,     
+	         isets=>CFG_ISETS,     
+	         ilinesize=>CFG_ILINE,
+	         isetsize=>CFG_ISETSZ,  
+	         isetlock=>CFG_ILOCK,  
+	         dcen=>CFG_DCEN,      
+	         drepl=>CFG_DREPL,     
+	         dsets=>CFG_DSETS,     
+	         dlinesize=>CFG_DLINE, 
+	         dsetsize=>CFG_DSETSZ,  
+	         dsetlock=>CFG_DLOCK,  
+	         dsnoop=>CFG_DSNOOP,    
+	         ilram=>CFG_ILRAMEN,     
+	         ilramsize=>CFG_ILRAMSZ, 
+	         ilramstart=>CFG_ILRAMADDR,
+	         dlram=>CFG_DLRAMEN, 
+	         dlramsize=>CFG_DLRAMSZ,
+	         dlramstart=>CFG_DLRAMADDR,
+	         mmuen=>CFG_MMUEN,     
                  itlbnum=> 8,  
-                 --dtlbnum=>   
                  tlb_type=> 2,  
                  tlb_rep=>  0 ,
                  lddel=>CFG_LDDEL,     
@@ -243,103 +220,205 @@ alarm_combined(3) <= '0';
                  pwd=>CFG_PWD,       
                  svt=>CFG_SVT,       
                  rstaddr => CFG_RSTADDR,   
-                 --smp=>       
-                 --cached=>    
-                 --scantest=>  
-                 --mmupgsz=>   
                  bp=>CFG_BP)        
- --  port map (clkm, rstn, ahbmi, ahbmo(0), ahbsi, ahbso, irqi(0), irqo(0), dbgi(0), dbgo(0), clkout, alarm_combined, alarmout, triggerout, extsave, boot_select);
-   port map (clkm, rstn, ahbmi, ahbmo(0), ahbsi, ahbso, irqi(0), irqo(0), dbgi(0), dbgo(0), clkout, alarm_combined, alarmout, alarm1_emsensor, alarm2_aesenc, alarm3_aesdec, triggerout, '0', boot_select);
 
+	port map        (clk             => clkm, 
+                         rstn            => rstn, 
+                         ahbi            => ahbmi, 
+                         ahbo            => ahbmo(0), 
+                         ahbsi           => ahbsi, 
+                         ahbso           => ahbso, 
+                         irqi            => irqi(0), 
+                         irqo            => irqo(0), 
+                         dbgi            => dbgi(0), 
+                         dbgo            => dbgo(0), 
+                         clkout          => clkout, 
+                         alarmin         => alarm_combined, 
+                         alarmout        => alarmout, 
+                         alarm1_emsensor => alarm_emsensor, 
+                         alarm2_aesenc   => alarm_aes_encrypt, 
+                         alarm3_aesdec   => alarm_aes_decrypt, 
+                         triggerout      => triggerout, 
+                         extsave         => '0', 
+                         boot_select     => boot_select);
    
-    error <= not dbgo(0).error ;
+    errorn <= dbgo(0).error ;
+	 
   -- LEON3 Debug Support Unit    
   dsu0 : dsu3
-    generic map (hindex => 2, ncpu => 1, tech => memtech, irq => 0, kbytes => 0)
-    port map (rstn, clkm, ahbmi, ahbsi, ahbso(2), dbgo, dbgi, dsui, dsuo);
-  -- dsui.enable <= '1';
-  -- dsui.break <= '0';
+    generic map (hindex => 2,
+		ncpu => 1,
+		tech => memtech,
+		irq => 0,
+		kbytes => 0)
+    port map (		 rst   		=> rstn, 
+    			 clk   		=> clkm,  
+    			 ahbmi 		=> ahbmi,
+    			 ahbsi 		=> ahbsi,
+    			 ahbso 		=> ahbso(2), 
+    			 dbgi  		=> dbgo,  
+    			 dbgo  		=> dbgi,
+    			 dsui  		=> dsui,
+    			 dsuo  		=> dsuo);
   
- -- SWITCH(7) = dsuen
- -- dsuen_pad : inpad generic map (tech => padtech) port map (switch(7), dsui.enable);
+ 
   dsui.enable <= dsuen;
-  -- SWITCH(6) = dsubre
- -- dsubre_pad : inpad generic map (tech => padtech) port map (switch(6), dsui.break);
   dsui.break <= dsubre;
-  -- LED(6) = dsuact
- -- dsuact_pad : outpad generic map (tech => padtech) port map (led(6), dsuo.active);
   dsuact <= dsuo.active;
   
   -- Debug UART
   dcom0 : ahbuart 
-    generic map (hindex => 1, pindex => 4, paddr => 7)
-    port map (rstn, clkm, dui, duo, apbi, apbo(4), ahbmi, ahbmo(1));
+    generic map (hindex => 1,
+		 pindex => 4,
+		 paddr => 7)
+    port map (		rst   => rstn,       
+    			clk   => clkm,       
+    			uarti => dui,        
+    			uarto => duo,        
+    			apbi  => apbi,       
+    			apbo  => apbo(4),    
+    			ahbi  => ahbmi,      
+    			ahbo  => ahbmo(1));  	
+
+
   dsurx_pad : inpad generic map (tech  => padtech) port map (DebugUart_RX, dui.rxd);
   dsutx_pad : outpad generic map (tech => padtech) port map (DebugUart_TX, duo.txd);
-  led(0) <= not dui.rxd;
-  led(1) <= not duo.txd;
+  --led(0) <= not dui.rxd;
+  --led(1) <= not duo.txd;
 
-  ahbjtag0 : ahbjtag generic map(tech => fabtech, hindex => 3)
-    port map(rstn, clkm, tck, tms, tdi, tdo, ahbmi, ahbmo(3),
-             open, open, open, open, open, open, open, gnd);
+  ahbjtag0 : ahbjtag 
+    generic map(tech => fabtech,
+		hindex => 3)
+    port map(		rst    		=>rstn,         
+    			clk         	=>clkm,
+    			tck         	=>tck,
+    			tms         	=>tms,
+    			tdi         	=>tdi,
+    			tdo         	=>tdo,
+    			ahbi        	=>ahbmi,
+    			ahbo        	=>ahbmo(3),
+    			tapo_tck    	=>open,  
+    			tapo_tdi    	=>open,  
+    			tapo_inst   	=>open,  
+    			tapo_rst    	=>open,  
+    			tapo_capt   	=>open,  
+    			tapo_shft   	=>open,  
+    			tapo_upd    	=>open,  
+    			tapi_tdo    	=>gnd);  
+ 
+
 
 -----------------------------------------------------------------------
 ---  AHB ROM ----------------------------------------------------------
 -----------------------------------------------------------------------
 
   ahbrom0 : entity work.ahbrom
-   generic map (hindex => 6, haddr => CFG_AHBRODDR, pipe => CFG_AHBROPIP)
-   port map ( rstn, clkm, ahbsi, ahbso(6));
+   generic map ( hindex => 6,
+		 haddr => CFG_AHBRODDR,
+		 pipe => CFG_AHBROPIP)
+   port map ( 		 rst			=>rstn,
+			 clk			=>clkm,
+			 ahbsi			=>ahbsi,
+			 ahbso			=>ahbso(6));
 	
 -----------------------------------------------------------------------
 ---  AHB RAM ----------------------------------------------------------
 -----------------------------------------------------------------------
-	 ahbram0 : ahbram generic map (hindex => 7, haddr => CFG_AHBRADDR,
-	 tech => CFG_MEMTECH, pipe => CFG_AHBRPIPE, kbytes => CFG_AHBRSZ)
-	 port map ( rstn, clkm, ahbsi, ahbso(7));
+  ahbram0 : ahbram 
+   generic map ( hindex => 7,
+		 haddr => CFG_AHBRADDR,
+  		 tech => CFG_MEMTECH,
+		 pipe => CFG_AHBRPIPE,
+		 kbytes => CFG_AHBRSZ)
+   port map ( 		rst 		=>rstn,
+	 		clk 		=>clkm,
+			ahbsi 		=>ahbsi,
+			ahbso 		=>ahbso(7));
   
 ----------------------------------------------------------------------
 ---  APB Bridge and various periherals -------------------------------
 ----------------------------------------------------------------------
 
   apb0 : apbctrl       -- APB Bridge
-    generic map (hindex => 1, haddr => CFG_APBADDR)
-    port map (rstn, clkm, ahbsi, ahbso(1), apbi, apbo);
+    generic map ( hindex => 1,
+		 haddr => CFG_APBADDR)
+    port map (		 rst			=>rstn,
+			 clk			=>clkm,
+			 ahbi			=>ahbsi,
+			 ahbo			=>ahbso(1),
+			 apbi			=>apbi,
+			 apbo			=>apbo);
 
   irqctrl0 : irqmp     -- Interrupt controller
-    generic map (pindex => 2, paddr => 2, ncpu => 1)
-    port map (rstn, clkm, apbi, apbo(2), irqo, irqi);
+    generic map ( pindex => 2,
+		 paddr => 2,
+		 ncpu => 1)
+    port map (		 rst			=>rstn,
+			 clk			=>clkm,
+			 apbi			=>apbi,
+			 apbo			=>apbo(2),
+			 irqi			=>irqo,
+			 irqo			=>irqi);
 
   uart1 : apbuart      -- UART 1
-    generic map (pindex   => 1, paddr => 1, pirq => 2, console => 1, fifosize => CFG_UART1_FIFO)
-    port map (rstn, clkm, apbi, apbo(1), u1i, u1o);
+    generic map ( pindex   => 1,
+		  paddr => 1,
+		  pirq => 2,
+		  console => 1,
+		  fifosize => CFG_UART1_FIFO)
+    port map (		 rst			=>rstn,
+			 clk			=>clkm,
+			 apbi			=>apbi,
+			 apbo			=>apbo(1),
+			 uarti			=>u1i,
+			 uarto			=>u1o);
   u1i.rxd    <= PeriphUart_RX;
- -- u1i.rxd    <= '0';
   u1i.ctsn   <= '0';
   u1i.extclk <= '0';
   PeriphUart_TX       <= u1o.txd;
   
-	--gpio0 : generate -- GR GPIO unit
-	grgpio0: grgpio
-		generic map( pindex => 3, paddr => 3, imask => CFG_GRGPIO_IMASK, nbits => 8)
-		port map( rstn, clkm, apbi, apbo(3), gpioi, gpioo);
-		pio_pads : for i in 0 to 7 generate
-		pio_pad : iopad generic map (tech => padtech)
-		port map (gpio(i), gpioo.dout(i), gpioo.oen(i), gpioi.din(i));
-	end generate;
-	--end generate;
+  --gpio0 : generate -- GR GPIO unit
+  grgpio0: grgpio
+   generic map( 	 pindex => 5,
+			 paddr => 5,
+			 imask => CFG_GRGPIO_IMASK,
+			 nbits => 8)
+   port map( 		 rst			=>rstn,
+			 clk			=>clkm,
+			 apbi			=>apbi,
+			 apbo			=>apbo(5),
+			 gpioi			=>gpioi,
+			 gpioo			=>gpioo);
+   pio_pads : for i in 0 to 7 generate
+   pio_pad : iopad generic map (tech => padtech)
+   port map ( 		pad			=>gpio(i),
+		 	i			=>gpioo.dout(i),
+			en			=>gpioo.oen(i),
+			o			=>gpioi.din(i));
+  end generate;
 
 -----------------------------------------------------------------------
 -- TIMER ----------------------
 -----------------------------------------------------------------------
   gpt : if CFG_GPT_ENABLE /= 0 generate
     gptimer0 : gptimer      -- timer unit
-      generic map (pindex => 6, paddr => 6, pirq => CFG_GPT_IRQ,
-       sepirq => CFG_GPT_SEPIRQ, sbits => CFG_GPT_SW, ntimers => CFG_GPT_NTIM,
-       nbits => CFG_GPT_TW, wdog => CFG_GPT_WDOGEN*CFG_GPT_WDOG)
-      port map (rstn, clkm, apbi, apbo(6), gpti, gpto);
-    gpti.dhalt <= dsuo.tstop; gpti.extclk <= '0';
-    --wdogn <= gpto.wdogn when OEPOL = 0 else gpto.wdog;
+      generic map ( 	pindex => 6,
+		 	paddr => 6,
+			pirq => CFG_GPT_IRQ,
+       			sepirq => CFG_GPT_SEPIRQ, 
+			sbits => CFG_GPT_SW, 
+			ntimers => CFG_GPT_NTIM,
+       			nbits => CFG_GPT_TW, 
+			wdog => CFG_GPT_WDOGEN*CFG_GPT_WDOG)
+      port map (	rst 			=>rstn, 
+			clk			=>clkm, 
+			apbi			=>apbi, 
+			apbo			=>apbo(6), 
+			gpti			=>gpti, 
+			gpto			=>gpto);
+    gpti.dhalt 	<= dsuo.tstop; 
+    gpti.extclk <= '0';
+    wdogn 	<= gpto.wdogn;
   end generate;
   notim : if CFG_GPT_ENABLE = 0 generate apbo(6) <= apb_none; end generate;
 
@@ -347,33 +426,24 @@ alarm_combined(3) <= '0';
 --  COPROCESSORS ----------------------
 -----------------------------------------------------------------------
 
-  -- bilgiday coprocessor example
-  cp0 : apb_example      -- interrupt controller
-      generic map (pindex => 10, paddr => 16#110#, pmask => 16#FF0#)
-      port map (rstn, clkm, apbi, apbo(10));
+  cp1 : apb_aes      -- AES
+      generic map (	pindex => 12, 
+			paddr => 16#130#, 
+			pmask => 16#FF0#)
+      port map (	rst			=>rstn, 
+			clk			=>clk, 
+			apbi			=>apbi, 
+			apbo			=>apbo(12));
+ 
+  cp2 : apb_keymill_vlog      -- KEYMILL
+          generic map (	pindex => 13, 
+			paddr => 16#140#, 
+			pmask => 16#FF0#)
+          port map (	rst			=>rstn, 
+			clk			=>clk, 
+			apbi			=>apbi, 
+			apbo			=>apbo(13));
 
-   -- bilgiday coprocessor example
-  --cp1 : apb_example_vlog      -- interrupt controller
-   --   generic map (pindex => 11, paddr => 16#120#, pmask => 16#FF0#)
-  --    port map (rstn, clkm, apbi, apbo(11));
-
-   -- chinmay emsensor coprocessore
-  cp1 : apb_emsensor -- emsensor 
-      generic map (pindex => 11, paddr => 16#120#, pmask => 16#FF0#)
-      port map (rstn, clkm, apbi, apbo(11), alarm_emsensor);
-
-   -- bilgiday coprocessor example
-  cp2 : apb_aes      -- interrupt controller
-      generic map (pindex => 12, paddr => 16#130#, pmask => 16#FF0#)
-      port map (rstn, clkm, apbi, apbo(12));
-  -- Keymill coprocessor 
-  cp3 : apb_keymill_vlog      -- interrupt controller
-          generic map (pindex => 13, paddr => 16#140#, pmask => 16#FF0#)
-          port map (rstn, clkm, apbi, apbo(13));
-   -- Chinmay aes_em coprocessor 
-  cp4 : apb_aes_em      -- aes_em 
-      generic map (pindex => 14, paddr => 16#150#, pmask => 16#FF0#)
-      port map (rstn, clkm, apbi, apbo(14), alarm_aes_encrypt, alarm_aes_decrypt);
 
 
   spimc: if CFG_SPICTRL_ENABLE = 0 and CFG_SPIMCTRL = 1 generate
@@ -410,39 +480,12 @@ alarm_combined(3) <= '0';
    spi_csn <= extsave;
    clkout <= spi_miso;
   end generate;
-	
------------------------------------------------------------------------
---  Test report module, only used for simulation ----------------------
------------------------------------------------------------------------
 
---pragma translate_off
-  test0 : ahbrep generic map (hindex => 4, haddr => 16#200#)
-    port map (rstn, clkm, ahbsi, ahbso(4));
---pragma translate_on
-
------------------------------------------------------------------------
----  Boot message  ----------------------------------------------------
------------------------------------------------------------------------
-
--- pragma translate_off
-  x : report_design
-    generic map (
-      msg1 => "LEON3 Demonstration design",
-      fabtech => tech_table(fabtech), memtech => tech_table(memtech),
-      mdel => 1
-      );
--- pragma translate_on
---  clk24out <= clk24out_r;
-  clk24 : process (clk) -- bilgiday calibration support
+  clk24 : process (clk) 
   begin 
     if rising_edge(clk) then 
---      if rstn = '0' then
-  --      clk24out_r <= '0';
-    --  else
 	clk24out_r <= not clk24out_r;
---	  end if;
    end if;
   end process;
-
-
+	
 end rtl;

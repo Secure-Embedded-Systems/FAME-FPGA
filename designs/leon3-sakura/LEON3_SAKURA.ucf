@@ -1,0 +1,95 @@
+# ------------------------------------------------------------------------
+# User Constraint File (.ucf) of Main FPGA on SAKURA-G (SAKURA-G-R1)
+#
+# Copyright (C) 2012,2013 MORITA TECH CO.,LTD.
+#
+# File name      : sakura_g_main_r1.ucf
+# Version        : 1.0
+# Date           : Jun/15/2013
+# Board Revision : SAKURA-G-R1
+# ------------------------------------------------------------------------
+# Timing -----------------------------------------------------------------
+#NET "M_CLK_OSC" TNM_NET = "CLK_OSC_GRP" ;
+#TIMESPEC "TS_CLK_OSC" = PERIOD : "CLK_OSC_GRP" : 48 MHz HIGH 50.0% ;
+NET "CLOCK_48" TNM_NET = sys_clk_pin;
+TIMESPEC TS_sys_clk_pin = PERIOD "CLOCK_48" 24 MHz HIGH 50%;
+
+# Pin --------------------------------------------------------------------
+# ------------
+# Clock, Reset
+# ------------
+NET "CLOCK_48"         LOC="J1"   | IOSTANDARD="LVCMOS25" ;                        # IO_L43N_GCLK22_IRDY2_M3CASN_3
+#NET "clkout"         LOC="P3"   |IOSTANDARD="LVCMOS25" ;                        # IO_L43N_GCLK22_IRDY2_M3CASN_3
+# --------
+# User LED
+# --------
+NET "LED<0>"             LOC="M2"   |IOSTANDARD="LVCMOS25" |SLEW="QUIETIO" |DRIVE=2 |TIG ; # IO_L38P_M3DQ2_3
+NET "LED<1>"             LOC="N1"   |IOSTANDARD="LVCMOS25" |SLEW="QUIETIO" |DRIVE=2 |TIG ; # IO_L37N_M3DQ1_3
+NET "LED<2>"             LOC="P1"   |IOSTANDARD="LVCMOS25" |SLEW="QUIETIO" |DRIVE=2 |TIG ; # IO_L36N_M3DQ9_3
+NET "LED<3>"             LOC="P2"   |IOSTANDARD="LVCMOS25" |SLEW="QUIETIO" |DRIVE=2 |TIG ; # IO_L38P_M3DQ2_3
+NET "LED<4>"             LOC="R1"   |IOSTANDARD="LVCMOS25" |SLEW="QUIETIO" |DRIVE=2 |TIG ; # IO_L37N_M3DQ1_3
+NET "LED<5>"             LOC="T1"   |IOSTANDARD="LVCMOS25" |SLEW="QUIETIO" |DRIVE=2 |TIG ; # IO_L36N_M3DQ9_3
+NET "LED<6>"             LOC="T2"   |IOSTANDARD="LVCMOS25" |SLEW="QUIETIO" |DRIVE=2 |TIG ; # IO_L38P_M3DQ2_3
+NET "LED<7>"             LOC="U1"   |IOSTANDARD="LVCMOS25" |SLEW="QUIETIO" |DRIVE=2 |TIG ; # IO_L37N_M3DQ1_3
+NET "LED<8>"             LOC="V1"   |IOSTANDARD="LVCMOS25" |SLEW="QUIETIO" |DRIVE=2 |TIG ; # IO_L36N_M3DQ9_3
+NET "LED<9>"             LOC="V2"   |IOSTANDARD="LVCMOS25" |SLEW="QUIETIO" |DRIVE=2 |TIG ; # IO_L36N_M3DQ9_3
+
+
+# --------
+# User GPIO
+# --------
+NET "GPIO<1>"             LOC="A4"   |IOSTANDARD="LVCMOS25"  ; # IO_L34N_M3UDQSN_3
+NET "GPIO<2>"             LOC="A5"   |IOSTANDARD="LVCMOS25"  ; # IO_L34P_M3UDQS_3
+NET "GPIO<3>"             LOC="B6"   |IOSTANDARD="LVCMOS25"  ; # IO_L33N_M3DQ13_3
+NET "GPIO<4>"             LOC="A6"   |IOSTANDARD="LVCMOS25"  ; # IO_L34N_M3UDQSN_3
+NET "GPIO<5>"             LOC="A7"   |IOSTANDARD="LVCMOS25"  ; # IO_L34P_M3UDQS_3
+NET "GPIO<6>"             LOC="B8"   |IOSTANDARD="LVCMOS25"  ; # IO_L33N_M3DQ13_3
+NET "GPIO<7>"             LOC="A8"   |IOSTANDARD="LVCMOS25"  ; # IO_L32N_M3DQ15_3
+NET "GPIO<8>"             LOC="A9"   |IOSTANDARD="LVCMOS25"  ; # IO_L32P_M3DQ14_3
+NET "GPIO<11>"             LOC="C5"   |IOSTANDARD="LVCMOS25"  ; # IO_L34N_M3UDQSN_3
+NET "GPIO<12>"             LOC="C6"   |IOSTANDARD="LVCMOS25"  ; # IO_L34P_M3UDQS_3
+NET "GPIO<13>"             LOC="C7"   |IOSTANDARD="LVCMOS25"  ; # IO_L33N_M3DQ13_3
+NET "GPIO<14>"             LOC="C17"   |IOSTANDARD="LVCMOS25"  ; # IO_L32N_M3DQ15_3
+NET "GPIO<15>"             LOC="A11"   |IOSTANDARD="LVCMOS25"  ; # IO_L32P_M3DQ14_3
+NET "GPIO<16>"             LOC="A12"   |IOSTANDARD="LVCMOS25"  ; # IO_L34N_M3UDQSN_3
+NET "GPIO<17>"             LOC="B12"   |IOSTANDARD="LVCMOS25"  ; # IO_L34P_M3UDQS_3
+NET "GPIO<18>"             LOC="A13"   |IOSTANDARD="LVCMOS25"  ; # IO_L33N_M3DQ13_3
+NET "GPIO<21>"             LOC="A14"   |IOSTANDARD="LVCMOS25"  ; # IO_L34N_M3UDQSN_3
+NET "GPIO<22>"             LOC="B14"   |IOSTANDARD="LVCMOS25"  ; # IO_L34P_M3UDQS_3
+NET "GPIO<23>"             LOC="A15"   |IOSTANDARD="LVCMOS25"  ; # IO_L33N_M3DQ13_3
+NET "GPIO<24>"             LOC="A16"   |IOSTANDARD="LVCMOS25"  ; # IO_L32N_M3DQ15_3
+NET "GPIO<25>"             LOC="B16"   |IOSTANDARD="LVCMOS25"  ; # IO_L32P_M3DQ14_3
+NET "GPIO<26>"             LOC="A17"   |IOSTANDARD="LVCMOS25"  ; # IO_L34N_M3UDQSN_3
+NET "GPIO<27>"             LOC="A18"   |IOSTANDARD="LVCMOS25"  ; # IO_L34P_M3UDQS_3
+NET "GPIO<28>"             LOC="B18"   |IOSTANDARD="LVCMOS25"  ; # IO_L33N_M3DQ13_3
+NET "GPIO<31>"             LOC="B10"   |IOSTANDARD="LVCMOS25"  ; # IO_L34N_M3UDQSN_3
+NET "GPIO<32>"             LOC="A10"   |IOSTANDARD="LVCMOS25"  ; # IO_L34P_M3UDQS_3
+
+
+# ----------------
+# User Push Switch
+# ----------------
+#NET "RESETN"          LOC="D3"   |IOSTANDARD="LVCMOS25" |TIG ; # IO_L81N_3
+# ---------------
+# User DIP Switch
+# ---------------
+#NET "boot_select"         LOC="D1"   | IOSTANDARD="LVCMOS25" | TIG ; # IO_L50N_M3BA2_3 
+NET "SW<1>"           LOC="B2"   | IOSTANDARD="LVCMOS25" | TIG ; # IO_L54N_M3A11_3
+NET "SW<2>"           LOC="B1"   | IOSTANDARD="LVCMOS25" | TIG ; # IO_L52N_M3A9_3
+NET "SW<3>"           LOC="D3"   | IOSTANDARD="LVCMOS25" | TIG ; # IO_L50P_M3WE_3
+NET "SW<4>"           LOC="D2"   | IOSTANDARD="LVCMOS25" | TIG ; # IO_L54N_M3A11_3
+NET "SW<5>"           LOC="D1"   | IOSTANDARD="LVCMOS25" | TIG ; # IO_L52N_M3A9_3
+NET "SW<6>"           LOC="E1"   | IOSTANDARD="LVCMOS25" | TIG ; # IO_L50P_M3WE_3
+NET "SW<7>"           LOC="F2"   | IOSTANDARD="LVCMOS25" | TIG ; # IO_L54N_M3A11_3
+NET "SW<8>"           LOC="F1"   | IOSTANDARD="LVCMOS25" | TIG ; # IO_L52N_M3A9_3
+
+#NET "dsuen"           LOC="E1"   | IOSTANDARD="LVCMOS25" | TIG ; # IO_L48N_M3BA1_3 
+#NET "dsubre"	      LOC="F2"   | IOSTANDARD="LVCMOS25" | TIG ; # IO_L46P_M3CLK_3
+#NET "alarmin"	      LOC="F1"   | IOSTANDARD="LVCMOS25" | TIG ; # IO_L46N_M3CLKN_3
+# -----------------------
+# Main FPGA Configuration
+# -----------------------
+NET "spi_sck"            LOC="W17"  | IOSTANDARD="LVCMOS25" ; # IO_L1P_CCLK_2
+NET "spi_csn"              LOC="AB5"  | IOSTANDARD="LVCMOS25" ; # IO_L65N_CSO_B_2
+NET "spi_miso"        LOC="Y17"  | IOSTANDARD="LVCMOS25" ; # IO_L3P_D0_DIN_MISO_MISO1_2
+NET "spi_mosi"         LOC="AB17" | IOSTANDARD="LVCMOS25" ; # IO_L3N_MOSI_CSI_B_MISO0_2

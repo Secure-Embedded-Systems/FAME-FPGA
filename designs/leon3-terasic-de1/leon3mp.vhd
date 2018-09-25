@@ -2,7 +2,7 @@
 --  LEON3 Demonstration design
 --  Copyright (C) 2013 Aeroflex Gaisler
 ------------------------------------------------------------------------------
---  FAME v2 MAPPING TO DE2-115
+--  FAME v2 MAPPING TO DE1 SoC
 --  by Secure Embedded Systems Virginia Tech
 ------------------------------------------------------------------------------
 

@@ -1,5 +1,5 @@
 GRLIB=../..
-TOP=leon3mp
+TOP=LEON3_SAKURA
 TECHNOLOGY=spartan6
 PART=XC6SLX75
 PACKAGE=csg484
@@ -10,6 +10,7 @@ UCF=$(TOP).ucf
 UCF_PLANAHEAD=$(UCF)
 EFFORT=high
 VHDLSYNFILES=config.vhd ahbrom.vhd leon3mp.vhd
+VERILOGSYNFILES=LEON3_SAKURA.v
 VHDLSIMFILES=testbench.vhd
 SIMTOP=testbench
 CLEAN=soft-clean
