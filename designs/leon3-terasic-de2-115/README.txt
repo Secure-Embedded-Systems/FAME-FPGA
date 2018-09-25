@@ -6,35 +6,31 @@ Synthesis can be triggered using command "make quartus"
 
 Pin Mapping:
 
-| FAMEv2 pin      | Function                               | DE2 pin  |
-|-----------------|----------------------------------------|----------|
-| resetn          | Global Reset                           | KEY[3]   |
-| clk             | Input clock                            | CLOCK_50 |
-| alarmout        | Alarm Out from leon3 if fault detected | LEDR[13] |
-| DebugUart_RX    | AHBUART receive                        | GPIO[35] |
-| DebugUart_TX    | AHBUART transmit                       | GPIO[33] |
-| PeriphUart_RX   | APBUART receive                        | GPIO[29] |
-| PeriphUart_TX   | APBUART transmit                       | GPIO[31] |
-| dsuact          | Check if DSU is active                 | LEDR[17] |
-| dsubre          | External Break signal for DSU          | SW[16]   |
-| gpio[0]         | GPIO                                   | GPIO[0]  |
-| gpio[1]         | GPIO                                   | GPIO[1]  |
-| gpio[2]         | GPIO                                   | GPIO[2]  |
-| gpio[3]         | GPIO                                   | GPIO[3]  |
-| gpio[4]         | GPIO                                   | GPIO[4]  |
-| gpio[5]         | GPIO                                   | GPIO[5]  |
-| gpio[6]         | GPIO                                   | GPIO[6]  |
-| gpio[7]         | GPIO                                   | GPIO[7]  |
-| alarmin         | Input Alarm for leon3                  | SW[14]   |
-| alarm3_aesdec   | Alarm Out from AES decrypt             | GPIO[12] |
-| alarm2_aesenc   | Alarm Out from AES encrypt             | GPIO[13] |
-| alarm1_emsensor | Alarm Out from emsensor                | GPIO[14] |
-| triggerout[0]   | TriggerOut from leon3                  | GPIO[17] |
-| triggerout[1]   | TriggerOut from leon3                  | GPIO[15] |
-| triggerout[2]   | TriggerOut from leon3                  | GPIO[13] |
-| triggerout[3]   | TriggerOut from leon3                  | GPIO[11] |
-| dsuen           | Enable/Disable DSU                     | SW[17]   |
-| errorn          | Error Signal from Leon3                | LEDR[8]  |
+| FAMEv2 pin    | Function                               | DE2 pin          |
+|---------------|----------------------------------------|------------------|
+| resetn        | Global Reset                           | KEY[3]           |
+| clk           | Input clock                            | CLOCK_50         |
+| alarmout      | Alarm Out from leon3 if fault detected | LEDR[13]         |
+| DebugUart_RX  | AHBUART receive                        | GPIO[35],LEDG{1] |
+| DebugUart_TX  | AHBUART transmit                       | GPIO[33],LEDG[0] |
+| PeriphUart_RX | APBUART receive                        | GPIO[29],LEDG[3] |
+| PeriphUart_TX | APBUART transmit                       | GPIO[31],LEDG[2] |
+| dsuact        | Check if DSU is active                 | LEDR[17]         |
+| dsubre        | External Break signal for DSU          | SW[16]           |
+| gpio[0]       | GPIO                                   | GPIO[0],LEDR[0]  |
+| gpio[1]       | GPIO                                   | GPIO[1],LEDR[1]  |
+| gpio[2]       | GPIO                                   | GPIO[2],LEDR[2]  |
+| gpio[3]       | GPIO                                   | GPIO[3],LEDR[3]  |
+| gpio[4]       | GPIO                                   | GPIO[4],LEDR[4]  |
+| gpio[5]       | GPIO                                   | GPIO[5],LEDR[5]  |
+| gpio[6]       | GPIO                                   | GPIO[6],LEDR[6]  |
+| gpio[7]       | GPIO                                   | GPIO[7],LEDR[7]  |
+| triggerout[0] | TriggerOut from leon3                  | GPIO[17]         |
+| triggerout[1] | TriggerOut from leon3                  | GPIO[15]         |
+| triggerout[2] | TriggerOut from leon3                  | GPIO[13]         |
+| triggerout[3] | TriggerOut from leon3                  | GPIO[11]         |
+| dsuen         | Enable/Disable DSU                     | SW[17]           |
+| errorn        | Error Signal from Leon3                | LEDR[8]          |
 
 
 $ ./grmon.exe -u -uart //./com7.
