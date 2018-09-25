@@ -13,6 +13,6 @@ Steps to synthesize and run the famev2 design on the FPGA:
 1. Navigate to relevant subdirectory in designs/.
 2. For Altera designs trigger synthesis using command "make quartus".
 3. For SakuraG board trigger synthesis using command "make ise".
-4. Grab generated bitstream(.sof for Altera, .bit for SakuraG) and program on the board using platform specific programmer.
+4. Grab generated bitstream(.sof/.pof/.jic for Altera, .bit for SakuraG) and program on the board using platform specific programmer.
 
 Detailed Pin mapping and functions of pins provided inside the each FPGA port subdirectory.
