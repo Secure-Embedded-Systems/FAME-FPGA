@@ -28,7 +28,26 @@ main()
 	coprocessor_base_ptr[18] = 0x00000000;	//init_vector_encrypt_2
 	coprocessor_base_ptr[19] = 0x00000000;	//init_vector_encrypt_3
 	
-	coprocessor_base_ptr[32] = 0x00000001;	//control_register
+	coprocessor_base_ptr[32] = 0x00000001;	//control_register: start encryption
+	//for(i = 0; i < 10; i++); 
+	coprocessor_base_ptr[32] = 0x00000000;	//control_register: reset encryption bit
+	
+	//for(i = 0; i < 1000; i++); 
+	while(coprocessor_base_ptr[33] != 0x00000001); //Wait for encryption done
+
+	read_data_0 = coprocessor_base_ptr[24];
+	read_data_1 = coprocessor_base_ptr[25];
+	read_data_2 = coprocessor_base_ptr[26];
+	read_data_3 = coprocessor_base_ptr[27];
+
+	
+	printf("AES output = %08x \n", read_data_0);
+	printf("AES output = %08x \n", read_data_1);
+	printf("AES output = %08x \n", read_data_2);
+	printf("AES output = %08x \n", read_data_3);
+
+
+	/*coprocessor_base_ptr[32] = 0x00000001;	//control_register
 	//for(i = 0; i < 10; i++); 
 	coprocessor_base_ptr[32] = 0x00000000;	//control_register
 	
@@ -45,26 +64,7 @@ main()
 	printf("AES output = %08x \n", read_data_1);
 	printf("AES output = %08x \n", read_data_2);
 	printf("AES output = %08x \n", read_data_3);
-
-
-	coprocessor_base_ptr[32] = 0x00000001;	//control_register
-	//for(i = 0; i < 10; i++); 
-	coprocessor_base_ptr[32] = 0x00000000;	//control_register
-	
-	//for(i = 0; i < 1000; i++); 
-	while(coprocessor_base_ptr[33] != 0x00000001);
-
-	read_data_0 = coprocessor_base_ptr[24];
-	read_data_1 = coprocessor_base_ptr[25];
-	read_data_2 = coprocessor_base_ptr[26];
-	read_data_3 = coprocessor_base_ptr[27];
-
-	
-	printf("AES output = %08x \n", read_data_0);
-	printf("AES output = %08x \n", read_data_1);
-	printf("AES output = %08x \n", read_data_2);
-	printf("AES output = %08x \n", read_data_3);
-
+	*/
 
 	//DECRYPT
 	/*coprocessor_base_ptr = AES_BASE_ADDR;
