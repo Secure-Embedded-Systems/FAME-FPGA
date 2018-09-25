@@ -15,7 +15,7 @@ Registers for accessing the AES coprocessor
 The data, key and initialization registers are four 32-bit registers, making it 128-bit. The way to fill them up is that the Most significant 32 bits out of 128 go into the [0] register. Eg - data_input_encrypt[0] should be filled with data[127:96] and data_input_encrypt[3] should be filled with data[31:0]. The same convention should be followed for the key and initialization vector. Also, the output data should be read and arranged in the same convention.
 
 Data Input Register - data_input_encrypt[0:3]/data_input_decrypt[0:3]
-[0]	[1]	[2]	[3]
+[0]   	  [1]   	  [2]	      [3]
 31 ---- 0	31 ---- 0	31 ---- 0	31 ---- 0
 data[127:96]	data[95:64]	data[63:32]	data[31:0]
 Here, the 128-bit data will be plaintext in the case of encryption and ciphertext in case od decryption.
