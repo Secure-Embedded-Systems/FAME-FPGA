@@ -52,16 +52,16 @@ module LEON3_DE1(
    assign LEDR[8]     = ~led8inv;
    
    assign GPIO[33] 	  = dsutx;
-   assign LEDR[4]      = dsutx;
+   assign LEDR[4]      = ~dsutx;
    
    assign dsurx        = GPIO[35];
-   assign LEDR[5]      = GPIO[35];
+   assign LEDR[5]      = ~GPIO[35];
    
    assign GPIO[31] = txd1;   
-   assign LEDR[6]      = txd1;
+   assign LEDR[6]      = ~txd1;
    
    assign rxd1         = GPIO[29];
-   assign LEDR[7]      = GPIO[29];  
+   assign LEDR[7]      = ~GPIO[29];  
    assign LEDR[9]	= ~led9inv;
    assign LEDR[3:0]    = gpio[3:0];
    assign {GPIO[7],GPIO[6],GPIO[5],GPIO[4],GPIO[3],GPIO[2],GPIO[1],GPIO[0]} = gpio;
