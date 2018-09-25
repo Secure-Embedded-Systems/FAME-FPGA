@@ -1,11 +1,11 @@
 include .config
 GRLIB=../..
-TOP=leon3mp
+TOP=LEON3_DE1
 #BOARD=terasic-de1
 #include $(GRLIB)/boards/$(BOARD)/Makefile.inc
 DEVICE=$(PART)-$(PACKAGE)$(SPEED)
 #UCF=$(GRLIB)/boards/$(BOARD)/$(TOP).ucf
-UCF=leon3mp.ucf
+#UCF=leon3mp.ucf
 #UCF=leon3mp_gbit_usb.ucf
 #QSF=$(GRLIB)/boards/$(BOARD)/$(TOP).qsf
 EFFORT=high
