@@ -281,10 +281,15 @@ begin
     			ahbo  => ahbmo(1));  	
 
 
-  dsurx_pad : inpad generic map (tech  => padtech) port map (DebugUart_RX, dui.rxd);
-  dsutx_pad : outpad generic map (tech => padtech) port map (DebugUart_TX, duo.txd);
+  --dsurx_pad : inpad generic map (tech  => padtech) port map (DebugUart_RX, dui.rxd);
+  --dsutx_pad : outpad generic map (tech => padtech) port map (DebugUart_TX, duo.txd);
   --led(0) <= not dui.rxd;
   --led(1) <= not duo.txd;
+  dui.rxd    <= DebugUart_RX;
+  dui.ctsn   <= '0';
+  dui.extclk <= '0';
+  DebugUart_TX <= duo.txd;
+  
 
   ahbjtag0 : ahbjtag 
     generic map(tech => fabtech,
