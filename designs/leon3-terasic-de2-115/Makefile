@@ -1,8 +1,8 @@
 include .config
 GRLIB=../..
 TOP=LEON3_DE2115
-BOARD=terasic-de2-ep4c115
-include $(GRLIB)/boards/$(BOARD)/Makefile.inc
+#BOARD=terasic-de2-ep4c115
+#include $(GRLIB)/boards/$(BOARD)/Makefile.inc
 DEVICE=$(PART)-$(PACKAGE)$(SPEED)
 EFFORT=high
 XSTOPT=
@@ -10,9 +10,9 @@ ISEMAPOPT=-timing
 VHDLSYNFILES=config.vhd leon3mp.vhd ahbrom.vhd
 VHDLSIMFILES=testbench.vhd
 SIMTOP=testbench
-SDCFILE=default.sdc
+#SDCFILE=default.sdc
 #SDCFILE=$(GRLIB)/boards/$(BOARD)/default.sdc
-BITGEN=$(GRLIB)/boards/$(BOARD)/default.ut
+#BITGEN=$(GRLIB)/boards/$(BOARD)/default.ut
 CLEAN=soft-clean
 SYNPOPT="set_option -pipe 1; set_option -retiming 1; set_option -write_apr_constraint 0"
 
