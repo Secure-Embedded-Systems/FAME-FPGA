@@ -11,8 +11,8 @@ XARGS=-O ihex
 XCFLAGS=-O2 -g -msoft-float
 
 
-src = src/gptimer.c src/aes_api.c src/gpio.c src/uart.c src/irqmp.c
-header = inc/gptimer.h inc/aes_api.h inc/gpio.h inc/uart.h src/irqmp.h
+src = src/gptimer.c src/aes_api.c src/keymill.c src/gpio.c src/uart.c src/irqmp.c
+header = inc/gptimer.h inc/aes_api.h src/keymill.h inc/gpio.h inc/uart.h src/irqmp.h
 obj = $(src:.c=.o)
 
 src_GPTIMER = src/gptimer.c
@@ -22,6 +22,10 @@ obj_GPTIMER = $(src_GPTIMER:.c=.o)
 src_AES = src/aes_api.c
 header_AES = inc/aes_api.h
 obj_AES = $(src_AES:.c=.o)
+
+src_KEYMILL = src/keymill.c
+header_KEYMILL = inc/keymill.h
+obj_KEYMILL = $(src_KEYMILL:.c=.o)
 
 src_GPIO = src/gpio.c
 header_GPIO = inc/gpio.h
