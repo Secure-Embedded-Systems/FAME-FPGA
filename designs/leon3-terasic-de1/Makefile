@@ -1,6 +1,8 @@
 include .config
 GRLIB=../..
 TOP=LEON3_DE1
+QSF_NEXT=generate_jic.tcl
+#$(info $$QSF_NEXT is [${QSF_NEXT}])
 #BOARD=terasic-de1
 #include $(GRLIB)/boards/$(BOARD)/Makefile.inc
 DEVICE=$(PART)-$(PACKAGE)$(SPEED)
