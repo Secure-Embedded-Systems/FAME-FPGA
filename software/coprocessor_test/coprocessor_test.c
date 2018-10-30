@@ -4,6 +4,8 @@ main()
 	int i; char j;
 	unsigned int *output_aes;
 	unsigned int output_keymill[128];
+	
+	//Initialize key and plain_text
 	char key[16];
 	char input[16];
 	for(j=0; j<16;j++)
@@ -12,10 +14,10 @@ main()
 		input[j] = 0;
 
 	printf("Testing AES coprocessor: Encrypt operation\n");
-	aes_input_key(key,1);
-	aes_input_data(input,1);
-	aes_start_encrypt_decrypt(1);
-	output_aes = (unsigned int*)aes_output_data(1);
+	aes_input_key(key,1);	//Send key
+	aes_input_data(input,1);//Send plain text
+	aes_start_encrypt_decrypt(1);//Start encryption
+	output_aes = (unsigned int*)aes_output_data(1);//Get cipher text
 	printf("AES cipher text word1 = %08x \n", output_aes[0]);
 	printf("AES cipher text word2 = %08x \n", output_aes[1]);
 	printf("AES cipher text word3 = %08x \n", output_aes[2]);
@@ -25,19 +27,20 @@ main()
 	else printf("AES encryption test failed\n");
 	
 	printf("\nTesting Keymill coprocessor\n");
+	//Initialize key and initialization vector
 	for(j=0; j<16;j++)
 		key[j] = 'A'+j;
 	for(j=0; j<16;j++)
 		input[j] = 'B';
 
-	reset_keymill();
-	keymill_input_key(key);
-	keymill_input_iv(input);
-	start_keymill();
+	reset_keymill();//SW reset keymill
+	keymill_input_key(key);//Send key
+	keymill_input_iv(input);//Send initialization vector
+	start_keymill();//Start keymill
 	//output_keymill = keymill_output();
 	for(i=0;i<4;i++)
 	{
-		output_keymill[i] = keymill_output();
+		output_keymill[i] = keymill_output();//Get keys generated from keymill
 		printf("\nKeymill output %d : %x", i, output_keymill[i]);
 	}
 
