@@ -1208,7 +1208,7 @@ quartus-vqm:
 		cp  $(GRLIB)/netlists/altera/stratix2/*.vqm . ;;\
 	esac
 
-quartus: quartus-vqm
+quartus:
 	make quartus-map quartus-route
 
 quartus-synp:  $(TOP)_synplify.prj synplify/$(TOP).edf quartus-vqm
@@ -1228,7 +1228,7 @@ quartus-launch: $(TOP)_quartus.qsf quartus-vqm
 quartus-launch-synp:  $(TOP)_synplify.prj synplify/$(TOP).edf quartus-vqm
 	quartus $(TOP)_synplify.qpf
 
-quartus-map: $(TOP)_quartus.qsf quartus-vqm
+quartus-map: $(TOP)_quartus.qsf
 	$(QUARTUS_MAP) --import_settings_files=on  --export_settings_files=off $(TOP)_quartus -c $(TOP)_quartus
 	    $(if $(strip $(QSF_NEXT)),$(QUARTUS_SH) -t $(QSF_NEXT) quartus_map     $(TOP)_quartus $(TOP)_quartus,)
 
