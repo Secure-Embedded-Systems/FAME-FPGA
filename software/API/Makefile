@@ -1,10 +1,8 @@
 LDFLAGS= -lm
-CFLAGS= -O2 -Iinc
+CFLAGS= -O2 -Wall -Iinc
 
-CC=sparc-elf-gcc
-CCAR=sparc-elf-ar
-XDUMP=sparc-elf-objdump -dS
-XCOPY=sparc-elf-objcopy
+include ../make.swconfig
+
 IHEXTOMEM=perl ../../../bin/ihex2mem.pl
 MEMTOMEM=perl ../../../bin/mem2mem.pl
 XARGS=-O ihex
@@ -68,6 +66,6 @@ IRQMP:
 
 libfame.a : $(obj)
 	$(CCAR) r lib/$@ $(obj)
-	
+
 clean: 
 	rm -rf src/*.o lib/*.a
