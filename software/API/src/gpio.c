@@ -1,8 +1,23 @@
 #include "gpio.h"
-gpio_reg *ptr = (gpio_reg *)GPIO_BASE_ADDR;
 
-void set_gpio_dir(unsigned int gpio_num, unsigned int dir)	//Set the direction of an individual gpio pin
-{
+#define GPIO_BASE_ADDR 0x80000500
+#define NUM_GPIO 8
+
+typedef struct {
+	volatile unsigned int din;
+	volatile unsigned int dout;
+	volatile unsigned int dir;
+	volatile unsigned int imask;
+	volatile unsigned int level;
+	volatile unsigned int edge;
+	volatile unsigned int bypass;
+	volatile unsigned int reserved;
+	volatile unsigned int irqmap;
+} gpio_reg;
+
+
+void set_gpio_dir(unsigned int gpio_num, unsigned int dir) {
+	gpio_reg *ptr = (gpio_reg *)GPIO_BASE_ADDR;
 	if(gpio_num < NUM_GPIO) 
 	{
 		if(dir==0)
@@ -13,8 +28,8 @@ void set_gpio_dir(unsigned int gpio_num, unsigned int dir)	//Set the direction o
 
 }
 
-void set_gpio_pin_output(unsigned int gpio_num, unsigned int value)	//Set the output of an individual gpio pin
-{
+void set_gpio_pin_output(unsigned int gpio_num, unsigned int value)	{
+	gpio_reg *ptr = (gpio_reg *)GPIO_BASE_ADDR;
 	if(gpio_num < NUM_GPIO) 
 	{
 		if(value==0)
@@ -24,21 +39,22 @@ void set_gpio_pin_output(unsigned int gpio_num, unsigned int value)	//Set the ou
 	}
 }
 
-void set_gpio_output(unsigned int value)	//Set the output of all gpio pins
-{
+void set_gpio_output(unsigned int value) {
+	gpio_reg *ptr = (gpio_reg *)GPIO_BASE_ADDR;
 	if(value < (0x1<<NUM_GPIO)) 
 	{
 		ptr->dout = value;
 	}
 }
 
-unsigned int get_gpio_pin_input(unsigned int gpio_num)	//Get the input from an individual gpio pin
-{
+unsigned int get_gpio_pin_input(unsigned int gpio_num) {
+	gpio_reg *ptr = (gpio_reg *)GPIO_BASE_ADDR;
 	if(gpio_num < NUM_GPIO)
 		return ptr->din >> gpio_num; 
+	return 0;
 }
 
-unsigned int get_gpio_input()	//Get the input from all gpio pins
-{
+unsigned int get_gpio_input() {
+	gpio_reg *ptr = (gpio_reg *)GPIO_BASE_ADDR;
 	return ptr->din; 
 }

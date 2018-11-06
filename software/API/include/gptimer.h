@@ -1,5 +1,5 @@
-#ifndef TIMER_H
-#define TIMER_H
+#ifndef GPTIMER_H
+#define GPTIMER_H
 
 void timer_start();
 void timer_stop();

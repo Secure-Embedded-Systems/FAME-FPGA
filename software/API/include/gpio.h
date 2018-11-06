@@ -1,15 +1,10 @@
-#include <stdio.h>
+#ifndef GPIO_H
+#define GPIO_H
 
-#define GPIO_BASE_ADDR 0x80000500
-#define NUM_GPIO 8
-typedef struct {
-	volatile unsigned int din;
-	volatile unsigned int dout;
-	volatile unsigned int dir;
-	volatile unsigned int imask;
-	volatile unsigned int level;
-	volatile unsigned int edge;
-	volatile unsigned int bypass;
-	volatile unsigned int reserved;
-	volatile unsigned int irqmap;
-}gpio_reg;
+void set_gpio_dir(unsigned int gpio_num, unsigned int dir);
+void set_gpio_pin_output(unsigned int gpio_num, unsigned int value);
+void set_gpio_output(unsigned int value);
+unsigned int get_gpio_pin_input(unsigned int gpio_num);
+unsigned int get_gpio_input();
+
+#endif

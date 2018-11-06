@@ -1,14 +1,11 @@
-#include <stdio.h>
-#define IRQMP_BASE_ADDR 0x80000200
+#ifndef IRQMP_H
+#define IRQMP_H
 
-typedef struct {
-	volatile unsigned int level;
-	volatile unsigned int pending;
-	volatile unsigned int force;
-	volatile unsigned int clear;
-	volatile unsigned int multiproc_status;
-	volatile unsigned int broadcast;
-	volatile unsigned int error_mode;
-	volatile unsigned int dummy1[10];
-	volatile unsigned int mask;
-}irqmp_reg;
+void init_irqmp();
+void set_interrupt_level(unsigned int interrupt, unsigned int level);
+void force_interrupt(unsigned int interrupt);
+char clear_interrupt(unsigned int interrupt);
+void mask_interrupt(unsigned int interrupt);
+unsigned int check_pending_interrupts();
+
+#endif

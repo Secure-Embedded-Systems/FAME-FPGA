@@ -1,12 +1,11 @@
-#include <stdio.h>
-#define BAUDRATE 38400
-#define SYS_CLK 50
-#define UART_BASE_ADDR 0x80000100
+#ifndef UART_H
+#define UART_H
 
-typedef struct {
-	volatile unsigned int data;
-	volatile unsigned int status;
-	volatile unsigned int control;
-	volatile unsigned int scaler;
-	volatile unsigned int fifo_debug;
-}uart_reg;
+void init_uart();
+void set_baudrate_uart(int baudrate);
+void put_char_uart(char a);
+char get_char_uart();
+void put_string_uart(char* input_string, int size);
+void get_string_uart(char* output_string,int size);
+
+#endif
