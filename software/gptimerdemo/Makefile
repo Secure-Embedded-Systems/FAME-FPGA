@@ -1,7 +1,7 @@
 include ../make.swconfig
 
 LDFLAGS=-L../API/lib -lfame
-CFLAGS=-I../API/inc
+CFLAGS=-I../API/include
 
 timerdemo: timerdemo.c
 	$(CC) $(CFLAGS) -c timerdemo.c -o timerdemo.o
