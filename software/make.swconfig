@@ -1,0 +1,4 @@
+CC=sparc-gaisler-elf-gcc
+CCAR=sparc-gaisler-elf-ar
+XDUMP=sparc-gaisler-elf-objdump -dS
+XCOPY=sparc-gaisler-elf-objcopy
