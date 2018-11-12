@@ -42,7 +42,6 @@ void reset_keymill() {
 
 unsigned keymill_output() {	
   unsigned output;
-  int i;
   while((KEYMILLREG[CONTROL] & 0x80000000) != 0);
   while((KEYMILLREG[CONTROL] & 0x40000000) != 0);
   output = KEYMILLREG[OUTPUT];
