@@ -17,7 +17,8 @@ typedef struct {
     timerreg timer[7];
 } gptimer;
 
-#define RESOLUTION 1
+// Timer ticks every 10 cycles
+#define RESOLUTION 9
 #define MAX_VALUE 0xFFFFFFFF
 
 unsigned int ntimers() {
