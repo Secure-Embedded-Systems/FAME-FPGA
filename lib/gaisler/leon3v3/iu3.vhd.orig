@@ -116,7 +116,6 @@ architecture rtl of iu3 is
   constant ISETMSB : integer := log2x(isets)-1;
   constant DSETMSB : integer := log2x(dsets)-1;
   constant RFBITS : integer range 6 to 10 := log2(NWIN+1) + 4;
---  constant SRFBITS : integer := RFBITS; -- PK
   constant NWINLOG2   : integer range 1 to 5 := log2(NWIN);
   constant CWPOPT : boolean := (NWIN = (2**NWINLOG2));
   constant CWPMIN : std_logic_vector(NWINLOG2-1 downto 0) := (others => '0');
@@ -144,9 +143,9 @@ architecture rtl of iu3 is
 
   subtype word is std_logic_vector(31 downto 0);
   subtype pctype is std_logic_vector(31 downto PCLOW);
-  subtype rfatype is std_logic_vector(RFBITS-1 downto 0); -- PK: RFBITS Reg File size ??
-  subtype cwptype is std_logic_vector(NWINLOG2-1 downto 0); -- PK: choose the reg window
-  type icdtype is array (0 to isets-1) of word; -- PK: isets of words
+  subtype rfatype is std_logic_vector(RFBITS-1 downto 0);
+  subtype cwptype is std_logic_vector(NWINLOG2-1 downto 0);
+  type icdtype is array (0 to isets-1) of word;
   type dcdtype is array (0 to dsets-1) of word;
   
   
@@ -170,8 +169,6 @@ architecture rtl of iu3 is
     ld    : std_ulogic;
     pv    : std_ulogic;
     rett  : std_ulogic;
-	-- PK: write to secure reg file
---	swreg : std_ulogic;
   end record;
   
   type fetch_reg_type is record
@@ -183,14 +180,14 @@ architecture rtl of iu3 is
     pc    : pctype;
     inst  : icdtype;
     cwp   : cwptype;
-    set   : std_logic_vector(ISETMSB downto 0); --- ????
-    mexc  : std_ulogic; --- ????
-    cnt   : std_logic_vector(1 downto 0); --- ????
-    pv    : std_ulogic; --- ????
-    annul : std_ulogic; --- ????
-    inull : std_ulogic; --- ????
-    step  : std_ulogic; --- ????
-    divrdy: std_ulogic; --- ????
+    set   : std_logic_vector(ISETMSB downto 0);
+    mexc  : std_ulogic;
+    cnt   : std_logic_vector(1 downto 0);
+    pv    : std_ulogic;
+    annul : std_ulogic;
+    inull : std_ulogic;
+    step  : std_ulogic;
+    divrdy: std_ulogic;
   end record;
   
   type regacc_reg_type is record
@@ -216,8 +213,6 @@ architecture rtl of iu3 is
     mulstart : std_ulogic;            
     divstart : std_ulogic;
     bp, nobp : std_ulogic;
-	-- pk: secure read - read data from secure reg file to regular reg file
---	srd : std_ulogic;
   end record;
   
   type execute_reg_type is record
@@ -225,7 +220,7 @@ architecture rtl of iu3 is
     ctrl   : pipeline_ctrl_type;
     op1    : word;
     op2    : word;
-    aluop  : std_logic_vector(3 downto 0);      -- Alu operation -- Pantea 2->3
+    aluop  : std_logic_vector(2 downto 0);      -- Alu operation
     alusel : std_logic_vector(1 downto 0);      -- Alu result select
     aluadd : std_ulogic;
     alucin : std_ulogic;
@@ -266,9 +261,6 @@ architecture rtl of iu3 is
     mul    : std_ulogic;
     casa   : std_ulogic;
     casaz  : std_ulogic;
-	-- pk 
-	op1    : word;
-    op2    : word;
   end record;
   
   type exception_state is (run, trap, dsu1, dsu2);
@@ -307,9 +299,6 @@ architecture rtl of iu3 is
     debug  : std_ulogic;
     nerror : std_ulogic;
     ipmask : std_ulogic;
-	-- pk 
-	op1    : word;
-    op2    : word;
   end record;
   
   type dsu_registers is record
@@ -354,8 +343,6 @@ architecture rtl of iu3 is
     svt    : std_ulogic;                                  -- enable traps
     dwt    : std_ulogic;                           -- disable write error trap
     dbp    : std_ulogic;                           -- disable branch prediction
-	-- PK
---	sec    : std_logic;                -- enable secure mode
   end record;
   
   type write_reg_type is record
@@ -390,23 +377,21 @@ architecture rtl of iu3 is
 	et0: std_ulogic;
 	et1: std_ulogic;
 	rett: std_ulogic;
-	-- PK: write data from insecure part to secure register file
-	-- swreg  : std_ulogic;
   end record;
 
-  type trig_reg_type is record -- bilgiday trigger support
+type trig_reg_type is record -- bilgiday trigger support
     r0      : std_logic_vector(31 downto 0);
     r1      : std_logic_vector(31 downto 0);
     r2      : std_logic_vector(31 downto 0);
     r3      : std_logic_vector(31 downto 0);
     cnt      : std_logic_vector(31 downto 0);
-  end record;
+end record;
 
-  type calibration_reg_type is record -- bilgiday calibration support
+type calibration_reg_type is record -- bilgiday calibration support
     r0      : std_logic_vector(31 downto 0);
-  end record;
+end record;
 
-  type observation_reg_type is record -- bilgiday pipeline_read_support
+type observation_reg_type is record -- bilgiday pipeline_read_support
     r0      : std_logic_vector(31 downto 0);
     r1      : std_logic_vector(31 downto 0);
     r2      : std_logic_vector(31 downto 0);
@@ -439,9 +424,9 @@ architecture rtl of iu3 is
 	r29      : std_logic_vector(31 downto 0);
     r30      : std_logic_vector(31 downto 0);
     r31      : std_logic_vector(31 downto 0);
-  end record;
+end record;
 
-  type registers is record
+type registers is record
     f  : fetch_reg_type;
     d  : decode_reg_type;
     a  : regacc_reg_type;
@@ -450,7 +435,7 @@ architecture rtl of iu3 is
     x  : exception_reg_type;
     w  : write_reg_type;
     trigger: trig_reg_type; -- bilgiday trigger_support
-  end record;
+end record;
 
   type exception_type is record
     pri   : std_ulogic;
@@ -978,14 +963,13 @@ architecture rtl of iu3 is
     ld    => '0',
     pv    => '0',
     rett  => '0');
---	swreg => '0' ); -- pk
   constant fpc_res : pctype := conv_std_logic_vector(rstaddr, 20) & zero32(11 downto PCLOW);
   
-  constant calibration_reg_res: calibration_reg_type := ( -- bilgiday calibration support
+constant calibration_reg_res: calibration_reg_type := ( -- bilgiday calibration support
     r0 	=> (others => '0')
-  );  
+);  
 
-  constant obs_reg_res: observation_reg_type := ( -- bilgiday pipeline_read_support
+constant obs_reg_res: observation_reg_type := ( -- bilgiday pipeline_read_support
     r0 	=> (others => '0'),
     r1 	=> (others => '0'),
     r2 	=> (others => '0'),
@@ -1018,7 +1002,7 @@ architecture rtl of iu3 is
     r29	=> (others => '0'),
     r30	=> (others => '0'),
     r31	=> (others => '0')
-  );
+);
   
   constant trig_reg_res : trig_reg_type := ( -- bilgiday trigger support
   r0     => (others => '0'),
@@ -1071,290 +1055,268 @@ architecture rtl of iu3 is
     divstart => '0',
     bp       => '0',
     nobp     => '0'
---	srd		 => '0' --pk
 );
-  constant execute_reg_res : execute_reg_type := (
-  branch      => '0',
-  ctrl    =>  pipeline_ctrl_res,
-  op1     => (others => '0'),
-  op2     => (others => '0'),
-  aluop   => (others => '0'),
-  alusel  => "11",
-  aluadd  => '1',
-  alucin  => '0',
-  ldbp1   => '0',
-  ldbp2   => '0',
-  invop2  => '0',
-  shcnt   => (others => '0'),
-  sari    => '0',
-  shleft  => '0',
-  ymsb    => '0',
-  rd      => (others => '0'),
-  jmpl    => '0',
-  su      => '0',
-  et      => '0',
-  cwp     => (others => '0'),
-  icc     => (others => '0'),
-  mulstep => '0',
-  mul     => '0',
-  mac     => '0',
-  bp      => '0',
-  rfe1    => '0',
-  rfe2    => '0'
-  );
-  constant memory_reg_res : memory_reg_type := (
-  branch      => '0',
-  ctrl   => pipeline_ctrl_res,
-  result => (others => '0'),
-  y      => (others => '0'),
-  icc    => (others => '0'),
-  nalign => '0',
-  dci    => dc_in_res,
-  werr   => '0',
-  wcwp   => '0',
-  irqen  => '0',
-  irqen2 => '0',
-  mac    => '0',
-  divz   => '0',
-  su     => '0',
-  mul    => '0',
-  casa   => '0',
-  casaz  => '0',
-  op1    => (others => '0'),
-  op2    => (others => '0')
-  );
-  function xnpc_res return std_logic_vector is
-  begin
-  if v8 /= 0 then return "100"; end if;
-  return "011";
-  end function xnpc_res;
-  constant exception_reg_res : exception_reg_type := (
-  branch      => '0',
-  branch0      => '0',
-  branch1      => '0',
-  ctrl      => pipeline_ctrl_res,
-  pc0    => (others => '0'), -- bilgiday
-  pc1    => (others => '0'), -- bilgiday
-  wicc0 => '0',-- bilgiday
-  wicc1 => '0',-- bilgiday
-  ld0 => '0',  -- bilgiday
-  ld1 => '0',  -- bilgiday
-  pv0 => '0',  -- bilgiday
-  pv1 => '0',  -- bilgiday
-  annul0 => '0', --bilgiday
-  annul1 => '0', --bilgiday
-  result    => (others => '0'),
-  y         => (others => '0'),
-  icc       => (others => '0'),
-  annul_all => '1',
-  data      => (others => (others => '0')),
-  set       => (others => '0'),
-  mexc      => '0',
-  dci       => dc_in_res,
-  laddr     => (others => '0'),
-  rstate    => run,                   -- Has special handling
-  npc       => xnpc_res,
-  intack    => '0',
-  ipend     => '0',
-  mac       => '0',
-  debug     => '0',                   -- Has special handling
-  nerror    => '0',
-  ipmask    => '0',
-  op1    => (others => '0'),
-  op2    => (others => '0')
-  );
-  constant DRES : dsu_registers := (
-  tt      => (others => '0'),
-  err     => '0',
-  tbufcnt => (others => '0'),
-  asi     => (others => '0'),
-  crdy    => (others => '0')
-  );
-  constant IRES : irestart_register := (
-  addr => (others => '0'), pwd => '0'
-  );
-  constant PRES : pwd_register_type := (
-  pwd => '0',                         -- Needs special handling
-  error => '0'
-  );
-  --constant special_register_res : special_register_type := (
-  --  cwp    => zero32(NWINLOG2-1 downto 0),
-  --  icc    => (others => '0'),
-  --  tt     => (others => '0'),
-  --  tba    => fpc_res(31 downto 12),
-  --  wim    => (others => '0'),
-  --  pil    => (others => '0'),
-  --  ec     => '0',
-  --  ef     => '0',
-  --  ps     => '1',
-  --  s      => '1',
-  --  et     => '0',
-  --  y      => (others => '0'),
-  --  asr18  => (others => '0'),
-  --  svt    => '0',
-  --  dwt    => '0',
-  --  dbp    => '0'
-  --  );
-  --XST workaround:
-  function special_register_res return special_register_type is
-  variable s : special_register_type;
-  begin
-  s.cwp   := zero32(NWINLOG2-1 downto 0);
-  s.cwp0   := zero32(NWINLOG2-1 downto 0); -- bilgiday
-  s.cwp1   := zero32(NWINLOG2-1 downto 0); -- bilgiday
-  s.icc   := (others => '0');
-  s.icc0   := (others => '0'); -- bilgiday
-  s.icc1   := (others => '0'); -- bilgiday
-  s.tt    := (others => '0');
-  s.tt0    := (others => '0'); -- bilgiday
-  s.tt1    := (others => '0'); -- bilgiday
-  --s.tba   := fpc_res(31 downto 12);
-  s.tba   := x"40000"; -- chinmay
-  s.wim   := (others => '0');
-  s.pil   := (others => '0');
-  s.ec    := '0';
-  s.ef    := '0';
-  s.ps    := '1';
-  s.s     := '1';
-  s.et    := '0';
-  s.y     := (others => '0');
-  s.asr18 := (others => '0');
-  s.svt   := '0';
-  s.dwt   := '0';
-  s.dbp   := '0';
-  return s;
-  end function special_register_res;
-  --constant write_reg_res : write_reg_type := (
-  --  s      => special_register_res,
-  --  result => (others => '0'),
-  --  wa     => (others => '0'),
-  --  wreg   => '0',
-  --  except => '0'
-  --  );
-  -- XST workaround:
-  function write_reg_res return write_reg_type is
-  variable w : write_reg_type;
-  begin
-  w.branch := '0';
-  w.branch0 := '0';
-  w.branch1 := '0';
-  w.pc0 := (others => '0');
-  w.pc1 := (others => '0');
-  w.inst1 := (others => '0');
-  w.inst0 := (others => '0');
-  w.s      := special_register_res;
-  w.result := (others => '0');
-  w.result0 := (others => '0'); -- bilgiday
-  w.result1 := (others => '0'); -- bilgiday
-  w.wa     := (others => '0');
-  w.wa0     := (others => '0'); -- bilgiday
-  w.wa1     := (others => '0'); -- bilgiday
-  w.wreg   := '0';
-  w.wreg0   := '0'; -- bilgiday
-  w.wreg1   := '0'; -- bilgiday
-  w.rdest0 := (others => '0'); -- bilgiday
-  w.rdest1 := (others => '0'); -- bilgiday
-  w.except := '0';
-  w.wicc0 := '0';-- bilgiday
-  w.wicc1 := '0';-- bilgiday
-  w.ld0 := '0';  -- bilgiday
-  w.ld1 := '0';  -- bilgiday
-  w.pv0 := '0';  -- bilgiday
-  w.pv1 := '0';  -- bilgiday
-  w.annul0 := '0'; --bilgiday
-  w.annul1 := '0'; --bilgiday
-  w.et0 := '0';    --bilgiday
-  w.et1 := '0';    --bilgiday
-  w.rett := '0';    --bilgiday
-  return w;
-  end function write_reg_res;
-  constant RRES : registers := (
-  f => fetch_reg_res,
-  d => decode_reg_res,
-  a => regacc_reg_res,
-  e => execute_reg_res,
-  m => memory_reg_res,
-  x => exception_reg_res,
-  w => write_reg_res,
-  trigger => trig_reg_res -- bilgiday trigger support
-  );
-  constant exception_res : exception_type := (
-  pri   => '0',
-  ill   => '0',
-  fpdis => '0',
-  cpdis => '0',
-  wovf  => '0',
-  wunf  => '0',
-  ticc  => '0'
-  );
-  constant wpr_none : watchpoint_register := (
-  addr  => zero32(31 downto 2),
-  mask  => zero32(31 downto 2),
-  exec  => '0',
-  load  => '0',
-  store => '0');
-  
-  signal chip_boundary_reg : std_logic_vector (56 downto 0);
-  signal r, rin : registers;
-  signal obsr, obsrin : observation_reg_type; -- bilgiday pipeline_read_support
-  signal calibr, calibrin : calibration_reg_type; -- bilgiday calibration support
-  signal wpr, wprin : watchpoint_registers;
-  signal dsur, dsuin : dsu_registers;
-  signal ir, irin : irestart_register;
-  signal rp, rpin : pwd_register_type;
-  
-  --signal extsave : std_ulogic; -- bilgiday pipeline_read_support
-  signal alarm : std_ulogic; -- bilgiday
-  signal cnten : std_ulogic; -- bilgiday
-  signal bufcnt : std_ulogic; -- bilgiday
-  signal invalid_bufcnt_x : std_ulogic; -- bilgiday
-  signal invalid_bufcnt_w : std_ulogic; -- bilgiday
-  signal osel : std_ulogic; -- bilgiday
-  signal alarmc, alarmin1, alarmin2, alarmin3, alarm_reg : std_ulogic; -- bilgiday
-  signal alarm_sensors, alarm_emsensor, alarm_aesenc, alarm_aesdec : std_ulogic; -- bilgiday
+constant execute_reg_res : execute_reg_type := (
+branch      => '0',
+ctrl    =>  pipeline_ctrl_res,
+op1     => (others => '0'),
+op2     => (others => '0'),
+aluop   => (others => '0'),
+alusel  => "11",
+aluadd  => '1',
+alucin  => '0',
+ldbp1   => '0',
+ldbp2   => '0',
+invop2  => '0',
+shcnt   => (others => '0'),
+sari    => '0',
+shleft  => '0',
+ymsb    => '0',
+rd      => (others => '0'),
+jmpl    => '0',
+su      => '0',
+et      => '0',
+cwp     => (others => '0'),
+icc     => (others => '0'),
+mulstep => '0',
+mul     => '0',
+mac     => '0',
+bp      => '0',
+rfe1    => '0',
+rfe2    => '0'
+);
+constant memory_reg_res : memory_reg_type := (
+branch      => '0',
+ctrl   => pipeline_ctrl_res,
+result => (others => '0'),
+y      => (others => '0'),
+icc    => (others => '0'),
+nalign => '0',
+dci    => dc_in_res,
+werr   => '0',
+wcwp   => '0',
+irqen  => '0',
+irqen2 => '0',
+mac    => '0',
+divz   => '0',
+su     => '0',
+mul    => '0',
+casa   => '0',
+casaz  => '0'
+);
+function xnpc_res return std_logic_vector is
+begin
+if v8 /= 0 then return "100"; end if;
+return "011";
+end function xnpc_res;
+constant exception_reg_res : exception_reg_type := (
+branch      => '0',
+branch0      => '0',
+branch1      => '0',
+ctrl      => pipeline_ctrl_res,
+pc0    => (others => '0'), -- bilgiday
+pc1    => (others => '0'), -- bilgiday
+wicc0 => '0',-- bilgiday
+wicc1 => '0',-- bilgiday
+ld0 => '0',  -- bilgiday
+ld1 => '0',  -- bilgiday
+pv0 => '0',  -- bilgiday
+pv1 => '0',  -- bilgiday
+annul0 => '0', --bilgiday
+annul1 => '0', --bilgiday
+result    => (others => '0'),
+y         => (others => '0'),
+icc       => (others => '0'),
+annul_all => '1',
+data      => (others => (others => '0')),
+set       => (others => '0'),
+mexc      => '0',
+dci       => dc_in_res,
+laddr     => (others => '0'),
+rstate    => run,                   -- Has special handling
+npc       => xnpc_res,
+intack    => '0',
+ipend     => '0',
+mac       => '0',
+debug     => '0',                   -- Has special handling
+nerror    => '0',
+ipmask    => '0'
+);
+constant DRES : dsu_registers := (
+tt      => (others => '0'),
+err     => '0',
+tbufcnt => (others => '0'),
+asi     => (others => '0'),
+crdy    => (others => '0')
+);
+constant IRES : irestart_register := (
+addr => (others => '0'), pwd => '0'
+);
+constant PRES : pwd_register_type := (
+pwd => '0',                         -- Needs special handling
+error => '0'
+);
+--constant special_register_res : special_register_type := (
+--  cwp    => zero32(NWINLOG2-1 downto 0),
+--  icc    => (others => '0'),
+--  tt     => (others => '0'),
+--  tba    => fpc_res(31 downto 12),
+--  wim    => (others => '0'),
+--  pil    => (others => '0'),
+--  ec     => '0',
+--  ef     => '0',
+--  ps     => '1',
+--  s      => '1',
+--  et     => '0',
+--  y      => (others => '0'),
+--  asr18  => (others => '0'),
+--  svt    => '0',
+--  dwt    => '0',
+--  dbp    => '0'
+--  );
+--XST workaround:
+function special_register_res return special_register_type is
+variable s : special_register_type;
+begin
+s.cwp   := zero32(NWINLOG2-1 downto 0);
+s.cwp0   := zero32(NWINLOG2-1 downto 0); -- bilgiday
+s.cwp1   := zero32(NWINLOG2-1 downto 0); -- bilgiday
+s.icc   := (others => '0');
+s.icc0   := (others => '0'); -- bilgiday
+s.icc1   := (others => '0'); -- bilgiday
+s.tt    := (others => '0');
+s.tt0    := (others => '0'); -- bilgiday
+s.tt1    := (others => '0'); -- bilgiday
+--s.tba   := fpc_res(31 downto 12);
+s.tba   := x"40000"; -- chinmay
+s.wim   := (others => '0');
+s.pil   := (others => '0');
+s.ec    := '0';
+s.ef    := '0';
+s.ps    := '1';
+s.s     := '1';
+s.et    := '0';
+s.y     := (others => '0');
+s.asr18 := (others => '0');
+s.svt   := '0';
+s.dwt   := '0';
+s.dbp   := '0';
+return s;
+end function special_register_res;
+--constant write_reg_res : write_reg_type := (
+--  s      => special_register_res,
+--  result => (others => '0'),
+--  wa     => (others => '0'),
+--  wreg   => '0',
+--  except => '0'
+--  );
+-- XST workaround:
+function write_reg_res return write_reg_type is
+variable w : write_reg_type;
+begin
+w.branch := '0';
+w.branch0 := '0';
+w.branch1 := '0';
+w.pc0 := (others => '0');
+w.pc1 := (others => '0');
+w.inst1 := (others => '0');
+w.inst0 := (others => '0');
+w.s      := special_register_res;
+w.result := (others => '0');
+w.result0 := (others => '0'); -- bilgiday
+w.result1 := (others => '0'); -- bilgiday
+w.wa     := (others => '0');
+w.wa0     := (others => '0'); -- bilgiday
+w.wa1     := (others => '0'); -- bilgiday
+w.wreg   := '0';
+w.wreg0   := '0'; -- bilgiday
+w.wreg1   := '0'; -- bilgiday
+w.rdest0 := (others => '0'); -- bilgiday
+w.rdest1 := (others => '0'); -- bilgiday
+w.except := '0';
+w.wicc0 := '0';-- bilgiday
+w.wicc1 := '0';-- bilgiday
+w.ld0 := '0';  -- bilgiday
+w.ld1 := '0';  -- bilgiday
+w.pv0 := '0';  -- bilgiday
+w.pv1 := '0';  -- bilgiday
+w.annul0 := '0'; --bilgiday
+w.annul1 := '0'; --bilgiday
+w.et0 := '0';    --bilgiday
+w.et1 := '0';    --bilgiday
+w.rett := '0';    --bilgiday
+return w;
+end function write_reg_res;
+constant RRES : registers := (
+f => fetch_reg_res,
+d => decode_reg_res,
+a => regacc_reg_res,
+e => execute_reg_res,
+m => memory_reg_res,
+x => exception_reg_res,
+w => write_reg_res,
+trigger => trig_reg_res -- bilgiday trigger support
+);
+constant exception_res : exception_type := (
+pri   => '0',
+ill   => '0',
+fpdis => '0',
+cpdis => '0',
+wovf  => '0',
+wunf  => '0',
+ticc  => '0'
+);
+constant wpr_none : watchpoint_register := (
+addr  => zero32(31 downto 2),
+mask  => zero32(31 downto 2),
+exec  => '0',
+load  => '0',
+store => '0');
+
+signal chip_boundary_reg : std_logic_vector (56 downto 0);
+signal r, rin : registers;
+signal obsr, obsrin : observation_reg_type; -- bilgiday pipeline_read_support
+signal calibr, calibrin : calibration_reg_type; -- bilgiday calibration support
+signal wpr, wprin : watchpoint_registers;
+signal dsur, dsuin : dsu_registers;
+signal ir, irin : irestart_register;
+signal rp, rpin : pwd_register_type;
+
+--signal extsave : std_ulogic; -- bilgiday pipeline_read_support
+signal alarm : std_ulogic; -- bilgiday
+signal cnten : std_ulogic; -- bilgiday
+signal bufcnt : std_ulogic; -- bilgiday
+signal invalid_bufcnt_x : std_ulogic; -- bilgiday
+signal invalid_bufcnt_w : std_ulogic; -- bilgiday
+signal osel : std_ulogic; -- bilgiday
+signal alarmc, alarmin1, alarmin2, alarmin3, alarm_reg : std_ulogic; -- bilgiday
+signal alarm_sensors, alarm_emsensor, alarm_aesenc, alarm_aesdec : std_ulogic; -- bilgiday
 
 -- execute stage operations
-	-- logicout: -- Pantea changed width 2->3
-  constant EXE_AND   : std_logic_vector(3 downto 0) := "0000";
-  constant EXE_XOR   : std_logic_vector(3 downto 0) := "0001"; -- must be equal to EXE_PASS2
-  constant EXE_OR    : std_logic_vector(3 downto 0) := "0010";
-  constant EXE_XNOR  : std_logic_vector(3 downto 0) := "0011";
-  constant EXE_ANDN  : std_logic_vector(3 downto 0) := "0100";
-  constant EXE_ORN   : std_logic_vector(3 downto 0) := "0101";
-  constant EXE_DIV   : std_logic_vector(3 downto 0) := "0110";
-  constant EXE_TIBSROT : std_logic_vector(3 downto 0) := "0111"; -- pk
 
-    -- miscout: -- Pantea changed width 2->3
-  constant EXE_PASS1 : std_logic_vector(3 downto 0) := "0000";
-  constant EXE_PASS2 : std_logic_vector(3 downto 0) := "0001";
-  constant EXE_STB   : std_logic_vector(3 downto 0) := "0010";
-  constant EXE_STH   : std_logic_vector(3 downto 0) := "0011";
-  constant EXE_ONES  : std_logic_vector(3 downto 0) := "0100";
-  constant EXE_RDY   : std_logic_vector(3 downto 0) := "0101";
-  constant EXE_SPR   : std_logic_vector(3 downto 0) := "0110";
-  constant EXE_LINK  : std_logic_vector(3 downto 0) := "0111";
+  constant EXE_AND   : std_logic_vector(2 downto 0) := "000";
+  constant EXE_XOR   : std_logic_vector(2 downto 0) := "001"; -- must be equal to EXE_PASS2
+  constant EXE_OR    : std_logic_vector(2 downto 0) := "010";
+  constant EXE_XNOR  : std_logic_vector(2 downto 0) := "011";
+  constant EXE_ANDN  : std_logic_vector(2 downto 0) := "100";
+  constant EXE_ORN   : std_logic_vector(2 downto 0) := "101";
+  constant EXE_DIV   : std_logic_vector(2 downto 0) := "110";
 
-    -- shiftout -- Pantea changed width 2->3
-  constant EXE_SLL   : std_logic_vector(3 downto 0) := "0001";
-  constant EXE_SRL   : std_logic_vector(3 downto 0) := "0010";
-  constant EXE_SRA   : std_logic_vector(3 downto 0) := "0100";
-  
-  constant EXE_BS   : std_logic_vector(3 downto 0) := "0011"; -- pk
-  constant EXE_INVBS   : std_logic_vector(3 downto 0) := "0101"; -- pk
-  
-  constant EXE_ANDOR   : std_logic_vector(3 downto 0) := "0110"; -- pk
-  constant EXE_ORAND   : std_logic_vector(3 downto 0) := "0111"; -- pk
+  constant EXE_PASS1 : std_logic_vector(2 downto 0) := "000";
+  constant EXE_PASS2 : std_logic_vector(2 downto 0) := "001";
+  constant EXE_STB   : std_logic_vector(2 downto 0) := "010";
+  constant EXE_STH   : std_logic_vector(2 downto 0) := "011";
+  constant EXE_ONES  : std_logic_vector(2 downto 0) := "100";
+  constant EXE_RDY   : std_logic_vector(2 downto 0) := "101";
+  constant EXE_SPR   : std_logic_vector(2 downto 0) := "110";
+  constant EXE_LINK  : std_logic_vector(2 downto 0) := "111";
 
-  constant EXE_NOP   : std_logic_vector(3 downto 0) := "0000";
- 
-  constant EXE_RED   : std_logic_vector(3 downto 0) := "1000"; -- pk
-  constant EXE_FTCHK : std_logic_vector(3 downto 0) := "1001"; -- pk
-  constant EXE_ANDC8 : std_logic_vector(3 downto 0) := "1010"; -- pk
-  constant EXE_ANDC16 : std_logic_vector(3 downto 0) := "1011"; -- pk
-  constant EXE_XORC8 : std_logic_vector(3 downto 0) := "1100"; -- pk
-  constant EXE_XORC16 : std_logic_vector(3 downto 0) := "1101"; -- pk
-  constant EXE_XNORC8 : std_logic_vector(3 downto 0) := "1110"; -- pk
-  constant EXE_XNORC16 : std_logic_vector(3 downto 0) := "1111"; -- pk
+  constant EXE_SLL   : std_logic_vector(2 downto 0) := "001";
+  constant EXE_SRL   : std_logic_vector(2 downto 0) := "010";
+  constant EXE_SRA   : std_logic_vector(2 downto 0) := "100";
+
+  constant EXE_NOP   : std_logic_vector(2 downto 0) := "000";
+
 -- EXE result select
 
   constant EXE_RES_ADD   : std_logic_vector(1 downto 0) := "00";
@@ -1517,132 +1479,115 @@ architecture rtl of iu3 is
 
 -- Check for illegal and privileged instructions
 
-  procedure exception_detect(r : registers; wpr : watchpoint_registers; dbgi : l3_debug_in_type;
-          trapin : in std_ulogic; ttin : in std_logic_vector(5 downto 0); 
-          trap : out std_ulogic; tt : out std_logic_vector(5 downto 0)) is
-    variable illegal_inst, privileged_inst : std_ulogic;
-    variable cp_disabled, fp_disabled, fpop : std_ulogic;
-    variable op : std_logic_vector(1 downto 0);
-    variable op2 : std_logic_vector(2 downto 0);
-    variable op3 : std_logic_vector(5 downto 0);
-    variable rd  : std_logic_vector(4 downto 0);
-    variable inst : word;
-    variable wph : std_ulogic;
-  begin
-    inst := r.a.ctrl.inst; trap := trapin; tt := ttin;
-    if r.a.ctrl.annul = '0' then
-      op  := inst(31 downto 30); op2 := inst(24 downto 22);
-      op3 := inst(24 downto 19); rd  := inst(29 downto 25);
-      illegal_inst := '0'; privileged_inst := '0'; cp_disabled := '0'; 
-      fp_disabled := '0'; fpop := '0'; 
-      case op is
-      when CALL => null;
-      when FMT2 =>
-        case op2 is
-        when SETHI | BICC => null;
-        when FBFCC => 
-          if FPEN then fp_disabled := not r.w.s.ef; else fp_disabled := '1'; end if;
-        when CBCCC =>
-          if (not CPEN) or (r.w.s.ec = '0') then cp_disabled := '1'; end if;
-        when others => illegal_inst := '1';
-        end case;
-      when FMT3 =>
-        case op3 is
-        when IAND | ANDCC | ANDN | ANDNCC | IOR | ORCC | ORN | ORNCC | IXOR |
-          XORCC | IXNOR | XNORCC | ISLL | ISRL | ISRA | MULSCC | IADD | ADDX |
-          ADDCC | ADDXCC | ISUB | SUBX | SUBCC | SUBXCC | FLUSH | JMPL | TICC | 
-          SAVE | RESTORE | RDY => null;
-        when TADDCC | TADDCCTV | TSUBCC | TSUBCCTV => 
-          if notag = 1 then illegal_inst := '1'; end if;
-        when UMAC | SMAC => 
-          if not MACEN then illegal_inst := '1'; end if;
-        when UMUL | SMUL | UMULCC | SMULCC => 
-          if not MULEN then illegal_inst := '1'; end if;
-        when UDIV | SDIV | UDIVCC | SDIVCC => 
-          if not DIVEN then illegal_inst := '1'; end if;
-        when RETT => illegal_inst := r.a.et; privileged_inst := not r.a.su;
-        when RDPSR | RDTBR | RDWIM => privileged_inst := not r.a.su;
-        when WRY =>
-          if rd(4) = '1' and rd(3 downto 0) /= "0010" then -- %ASR16-17, %ASR19-31
-            privileged_inst := not r.a.su;
-          end if;
-  	  -- PK 
-      when TIBSROT => null; -- May 18th
-      when TIBS => null; -- May 18th
-      when INVTIBS => null; -- May 18th
-      when ANDOR => null; -- pk
-      when ORAND => null; -- pk
-      when RED => null; -- pk
-      when FTCHK => null; -- pk
-  	--  when WRSEC => null; -- write sreg "101111"
-  	--  when ORS | SOR => null; -- ORS: reg to sreg, SOR: sreg to reg
-  	  -----------------------------
-        when WRPSR => 
-          privileged_inst := not r.a.su; 
-        when WRWIM | WRTBR  => privileged_inst := not r.a.su;
-        when FPOP1 | FPOP2 => 
-          if FPEN then fp_disabled := not r.w.s.ef; fpop := '1';
-          else fp_disabled := '1'; fpop := '0'; end if;
-        when CPOP1 | CPOP2 =>
-          if (not CPEN) or (r.w.s.ec = '0') then cp_disabled := '1'; end if;
-        when others => illegal_inst := '1';
-        end case;
-      when others =>      -- LDST
-        case op3 is
-        when LDD | ISTD => illegal_inst := rd(0); -- trap if odd destination register
-        when LD | LDUB | LDSTUB | LDUH | LDSB | LDSH | ST | STB | STH | SWAP =>
-          null;
-        when LDDA | STDA =>
-          illegal_inst := inst(13) or rd(0); privileged_inst := not r.a.su;
-        when LDA | LDUBA| LDSTUBA | LDUHA | LDSBA | LDSHA | STA | STBA | STHA |
-             SWAPA =>
-          illegal_inst := inst(13); privileged_inst := not r.a.su;
-        when CASA =>
-          if CASAEN then
-            illegal_inst := inst(13);
-            if (inst(12 downto 5) /= X"0A") then privileged_inst := not r.a.su; end if;
-          else illegal_inst := '1'; end if;
-        when LDDF | STDF | LDF | LDFSR | STF | STFSR =>
-          if FPEN then fp_disabled := not r.w.s.ef;
-          else fp_disabled := '1'; end if;
-        when STDFQ =>
-          privileged_inst := not r.a.su;
-          if (not FPEN) or (r.w.s.ef = '0') then fp_disabled := '1'; end if;
-        when STDCQ =>
-          privileged_inst := not r.a.su;
-          if (not CPEN) or (r.w.s.ec = '0') then cp_disabled := '1'; end if;
-        when LDC | LDCSR | LDDC | STC | STCSR | STDC =>
-          if (not CPEN) or (r.w.s.ec = '0') then cp_disabled := '1'; end if;
-	when ANDC8 => null; -- pk
-	when ANDC16 => null; -- pk
-	when XORC8 => null; -- pk
-	when XORC16 => null; -- pk
-	when XNORC8 => null; -- pk
-	when XNORC16 => null; -- pk
-        when others => illegal_inst := '1';
-        end case;
+procedure exception_detect(r : registers; wpr : watchpoint_registers; dbgi : l3_debug_in_type;
+        trapin : in std_ulogic; ttin : in std_logic_vector(5 downto 0); 
+        trap : out std_ulogic; tt : out std_logic_vector(5 downto 0)) is
+variable illegal_inst, privileged_inst : std_ulogic;
+variable cp_disabled, fp_disabled, fpop : std_ulogic;
+variable op : std_logic_vector(1 downto 0);
+variable op2 : std_logic_vector(2 downto 0);
+variable op3 : std_logic_vector(5 downto 0);
+variable rd  : std_logic_vector(4 downto 0);
+variable inst : word;
+variable wph : std_ulogic;
+begin
+  inst := r.a.ctrl.inst; trap := trapin; tt := ttin;
+  if r.a.ctrl.annul = '0' then
+    op  := inst(31 downto 30); op2 := inst(24 downto 22);
+    op3 := inst(24 downto 19); rd  := inst(29 downto 25);
+    illegal_inst := '0'; privileged_inst := '0'; cp_disabled := '0'; 
+    fp_disabled := '0'; fpop := '0'; 
+    case op is
+    when CALL => null;
+    when FMT2 =>
+      case op2 is
+      when SETHI | BICC => null;
+      when FBFCC => 
+        if FPEN then fp_disabled := not r.w.s.ef; else fp_disabled := '1'; end if;
+      when CBCCC =>
+        if (not CPEN) or (r.w.s.ec = '0') then cp_disabled := '1'; end if;
+      when others => illegal_inst := '1';
       end case;
-     
-       wph := wphit(r, wpr, dbgi);
-      
-      trap := '1';
-      if r.a.ctrl.trap = '1' then tt := r.a.ctrl.tt;
-      elsif privileged_inst = '1' then tt := TT_PRIV; 
-      elsif illegal_inst = '1' then tt := TT_IINST;
-      elsif fp_disabled = '1' then tt := TT_FPDIS;
-      elsif cp_disabled = '1' then tt := TT_CPDIS;
-      elsif wph = '1' then tt := TT_WATCH;
-      elsif r.a.wovf= '1' then tt := TT_WINOF;
-      elsif r.a.wunf= '1' then tt := TT_WINUF;
-      elsif r.a.ticc= '1' then tt := TT_TICC;
-      else trap := '0'; tt:= (others => '0'); end if;
-    end if;
-  end;
-  
-  -- instructions that write the condition codes (psr.icc)
-  
-  procedure wicc_y_gen(inst : word; wicc, wy : out std_ulogic) is
-  begin
+    when FMT3 =>
+      case op3 is
+      when IAND | ANDCC | ANDN | ANDNCC | IOR | ORCC | ORN | ORNCC | IXOR |
+        XORCC | IXNOR | XNORCC | ISLL | ISRL | ISRA | MULSCC | IADD | ADDX |
+        ADDCC | ADDXCC | ISUB | SUBX | SUBCC | SUBXCC | FLUSH | JMPL | TICC | 
+        SAVE | RESTORE | RDY => null;
+      when TADDCC | TADDCCTV | TSUBCC | TSUBCCTV => 
+        if notag = 1 then illegal_inst := '1'; end if;
+      when UMAC | SMAC => 
+        if not MACEN then illegal_inst := '1'; end if;
+      when UMUL | SMUL | UMULCC | SMULCC => 
+        if not MULEN then illegal_inst := '1'; end if;
+      when UDIV | SDIV | UDIVCC | SDIVCC => 
+        if not DIVEN then illegal_inst := '1'; end if;
+      when RETT => illegal_inst := r.a.et; privileged_inst := not r.a.su;
+      when RDPSR | RDTBR | RDWIM => privileged_inst := not r.a.su;
+      when WRY =>
+        if rd(4) = '1' and rd(3 downto 0) /= "0010" then -- %ASR16-17, %ASR19-31
+          privileged_inst := not r.a.su;
+        end if;
+      when WRPSR => 
+        privileged_inst := not r.a.su; 
+      when WRWIM | WRTBR  => privileged_inst := not r.a.su;
+      when FPOP1 | FPOP2 => 
+        if FPEN then fp_disabled := not r.w.s.ef; fpop := '1';
+        else fp_disabled := '1'; fpop := '0'; end if;
+      when CPOP1 | CPOP2 =>
+        if (not CPEN) or (r.w.s.ec = '0') then cp_disabled := '1'; end if;
+      when others => illegal_inst := '1';
+      end case;
+    when others =>      -- LDST
+      case op3 is
+      when LDD | ISTD => illegal_inst := rd(0); -- trap if odd destination register
+      when LD | LDUB | LDSTUB | LDUH | LDSB | LDSH | ST | STB | STH | SWAP =>
+        null;
+      when LDDA | STDA =>
+        illegal_inst := inst(13) or rd(0); privileged_inst := not r.a.su;
+      when LDA | LDUBA| LDSTUBA | LDUHA | LDSBA | LDSHA | STA | STBA | STHA |
+           SWAPA => 
+        illegal_inst := inst(13); privileged_inst := not r.a.su;
+      when CASA =>
+        if CASAEN then
+          illegal_inst := inst(13); 
+          if (inst(12 downto 5) /= X"0A") then privileged_inst := not r.a.su; end if;
+        else illegal_inst := '1'; end if;
+      when LDDF | STDF | LDF | LDFSR | STF | STFSR => 
+        if FPEN then fp_disabled := not r.w.s.ef;
+        else fp_disabled := '1'; end if;
+      when STDFQ => 
+        privileged_inst := not r.a.su; 
+        if (not FPEN) or (r.w.s.ef = '0') then fp_disabled := '1'; end if;
+      when STDCQ => 
+        privileged_inst := not r.a.su;
+        if (not CPEN) or (r.w.s.ec = '0') then cp_disabled := '1'; end if;
+      when LDC | LDCSR | LDDC | STC | STCSR | STDC => 
+        if (not CPEN) or (r.w.s.ec = '0') then cp_disabled := '1'; end if;
+      when others => illegal_inst := '1';
+      end case;
+    end case;
+
+    wph := wphit(r, wpr, dbgi);
+    
+    trap := '1';
+    if r.a.ctrl.trap = '1' then tt := r.a.ctrl.tt;
+    elsif privileged_inst = '1' then tt := TT_PRIV; 
+    elsif illegal_inst = '1' then tt := TT_IINST;
+    elsif fp_disabled = '1' then tt := TT_FPDIS;
+    elsif cp_disabled = '1' then tt := TT_CPDIS;
+    elsif wph = '1' then tt := TT_WATCH;
+    elsif r.a.wovf= '1' then tt := TT_WINOF;
+    elsif r.a.wunf= '1' then tt := TT_WINUF;
+    elsif r.a.ticc= '1' then tt := TT_TICC;
+    else trap := '0'; tt:= (others => '0'); end if;
+  end if;
+end;
+
+-- instructions that write the condition codes (psr.icc)
+
+procedure wicc_y_gen(inst : word; wicc, wy : out std_ulogic) is
+begin
   wicc := '0'; wy := '0';
   if inst(31 downto 30) = FMT3 then
     case inst(24 downto 19) is
@@ -1669,8 +1614,6 @@ architecture rtl of iu3 is
       if DIVEN and (divo.nready = '1') and (r.d.cnt /= "00") then
         wicc := '1';
       end if;
-	when TIBS | INVTIBS | RED =>
-	  wy := '1'; -- pk: enable y write
     when others =>
     end case;
   end if;
@@ -1678,75 +1621,73 @@ end;
 
 -- select cwp 
 
-  procedure cwp_gen(r, v : registers; annul, wcwp : std_ulogic; ncwp : cwptype;
-                    cwp : out cwptype) is
-  begin
-    if (r.x.rstate = trap) or
-        (r.x.rstate = dsu2) 
-       or (rstn = '0') then cwp := v.w.s.cwp;                                                                     
-    elsif (wcwp = '1') and (annul = '0') then cwp := ncwp;
-    elsif r.m.wcwp = '1' then cwp := r.m.result(NWINLOG2-1 downto 0);
-    else cwp := r.d.cwp; end if;
-  end;
-  
-  -- generate wcwp in ex stage
-  
-  procedure cwp_ex(r : in  registers; wcwp : out std_ulogic) is
-  begin
-    if (r.e.ctrl.inst(31 downto 30) = FMT3) and 
-       (r.e.ctrl.inst(24 downto 19) = WRPSR)
-    then wcwp := not r.e.ctrl.annul; else wcwp := '0'; end if;
-  end;
-  
-  -- generate next cwp & window under- and overflow traps
-  
-  procedure cwp_ctrl(r : in registers; xc_wim : in std_logic_vector(NWIN-1 downto 0);
-          inst : word; de_cwp : out cwptype; wovf_exc, wunf_exc, wcwp : out std_ulogic) is
-  variable op : std_logic_vector(1 downto 0);
-  variable op3 : std_logic_vector(5 downto 0);
-  variable wim : word;
-  variable ncwp : cwptype;
-  begin
-    op := inst(31 downto 30); op3 := inst(24 downto 19); 
-    wovf_exc := '0'; wunf_exc := '0'; wim := (others => '0'); 
-    wim(NWIN-1 downto 0) := xc_wim; ncwp := r.d.cwp; wcwp := '0';
-  
-    if (op = FMT3) and ((op3 = RETT) or (op3 = RESTORE) or (op3 = SAVE)) then
-      wcwp := '1';
-      if (op3 = SAVE) then
-        if (not CWPOPT) and (r.d.cwp = CWPMIN) then ncwp := CWPMAX;
-        else ncwp := r.d.cwp - 1 ; end if;
-      else
-        if (not CWPOPT) and (r.d.cwp = CWPMAX) then ncwp := CWPMIN;
-        else ncwp := r.d.cwp + 1; end if;
-      end if;
-      if wim(conv_integer(ncwp)) = '1' then -- wim: Window Invalid Mask  ???
-        if op3 = SAVE then wovf_exc := '1'; else wunf_exc := '1'; end if;
-      end if;
-    end if;
-    de_cwp := ncwp;
-  end;
+procedure cwp_gen(r, v : registers; annul, wcwp : std_ulogic; ncwp : cwptype;
+                  cwp : out cwptype) is
+begin
+  if (r.x.rstate = trap) or
+      (r.x.rstate = dsu2) 
+     or (rstn = '0') then cwp := v.w.s.cwp;                                                                     
+  elsif (wcwp = '1') and (annul = '0') then cwp := ncwp;
+  elsif r.m.wcwp = '1' then cwp := r.m.result(NWINLOG2-1 downto 0);
+  else cwp := r.d.cwp; end if;
+end;
 
-  -- generate register read address 1
-  
-  procedure rs1_gen(r : registers; inst : word;  rs1 : out std_logic_vector(4 downto 0);
-          rs1mod : out std_ulogic) is
-  variable op : std_logic_vector(1 downto 0);
-  variable op3 : std_logic_vector(5 downto 0);
-  begin
-    op := inst(31 downto 30); op3 := inst(24 downto 19); 
-    rs1 := inst(18 downto 14); rs1mod := '0';
- --if (op3 /= ANDC8 and op3 /= ANDC16 and op3 /= XORC8 and op3 /= XORC16 and op3 /= XNORC8 and op3 /= XNORC16) then -- pk added the whole if  
-   if (op = LDST) then
-      if ((r.d.cnt = "01") and ((op3(2) and not op3(3)) = '1')) or
-          (r.d.cnt = "10") 
-      then rs1mod := '1'; rs1 := inst(29 downto 25); end if;
-      if ((r.d.cnt = "10") and (op3(3 downto 0) = "0111")) then
-        rs1(0) := '1';
-      end if;
+-- generate wcwp in ex stage
+
+procedure cwp_ex(r : in  registers; wcwp : out std_ulogic) is
+begin
+  if (r.e.ctrl.inst(31 downto 30) = FMT3) and 
+     (r.e.ctrl.inst(24 downto 19) = WRPSR)
+  then wcwp := not r.e.ctrl.annul; else wcwp := '0'; end if;
+end;
+
+-- generate next cwp & window under- and overflow traps
+
+procedure cwp_ctrl(r : in registers; xc_wim : in std_logic_vector(NWIN-1 downto 0);
+        inst : word; de_cwp : out cwptype; wovf_exc, wunf_exc, wcwp : out std_ulogic) is
+variable op : std_logic_vector(1 downto 0);
+variable op3 : std_logic_vector(5 downto 0);
+variable wim : word;
+variable ncwp : cwptype;
+begin
+  op := inst(31 downto 30); op3 := inst(24 downto 19); 
+  wovf_exc := '0'; wunf_exc := '0'; wim := (others => '0'); 
+  wim(NWIN-1 downto 0) := xc_wim; ncwp := r.d.cwp; wcwp := '0';
+
+  if (op = FMT3) and ((op3 = RETT) or (op3 = RESTORE) or (op3 = SAVE)) then
+    wcwp := '1';
+    if (op3 = SAVE) then
+      if (not CWPOPT) and (r.d.cwp = CWPMIN) then ncwp := CWPMAX;
+      else ncwp := r.d.cwp - 1 ; end if;
+    else
+      if (not CWPOPT) and (r.d.cwp = CWPMAX) then ncwp := CWPMIN;
+      else ncwp := r.d.cwp + 1; end if;
     end if;
--- end if;
-  end;
+    if wim(conv_integer(ncwp)) = '1' then
+      if op3 = SAVE then wovf_exc := '1'; else wunf_exc := '1'; end if;
+    end if;
+  end if;
+  de_cwp := ncwp;
+end;
+
+-- generate register read address 1
+
+procedure rs1_gen(r : registers; inst : word;  rs1 : out std_logic_vector(4 downto 0);
+        rs1mod : out std_ulogic) is
+variable op : std_logic_vector(1 downto 0);
+variable op3 : std_logic_vector(5 downto 0);
+begin
+  op := inst(31 downto 30); op3 := inst(24 downto 19); 
+  rs1 := inst(18 downto 14); rs1mod := '0';
+  if (op = LDST) then
+    if ((r.d.cnt = "01") and ((op3(2) and not op3(3)) = '1')) or
+        (r.d.cnt = "10") 
+    then rs1mod := '1'; rs1 := inst(29 downto 25); end if;
+    if ((r.d.cnt = "10") and (op3(3 downto 0) = "0111")) then
+      rs1(0) := '1';
+    end if;
+  end if;
+end;
 
 -- load/icc interlock detection
 
@@ -1830,8 +1771,6 @@ end;
         when others => 
         end case;
       when LDST =>
-	 --if (op3 /= ANDC8 and op3 /= ANDC16 and op3 /= XORC8 and op3 /= XORC16 and op3 /= XNORC8 and op3 /= XNORC16) then -- pk added the whole if  
-
         ldcheck1 := '1'; ldchkra := '0';
         case r.d.cnt is
         when "00" =>
@@ -1847,7 +1786,6 @@ end;
           then ldcheck1 := '0'; ldcheck2 := '0'; end if;
         end case;
         if op3(5) = '1' then fins := BPRED; end if; -- no BP on FPU/CP LD/ST
-      --end if; -- pk
       when others => null;
       end case;
     end if;
@@ -2003,9 +1941,7 @@ end;
           end if;
         when others => null;
         end case;
-      when others =>  -- LDST
-	 --if (op3 /= ANDC8 and op3 /= ANDC16 and op3 /= XORC8 and op3 /= XORC16 and op3 /= XNORC8 and op3 /= XNORC16) then -- pk added the whole if  
- 
+      when others =>  -- LDST 
         case r.d.cnt is
         when "00" =>
           if (op3(2) = '1') or (op3(1 downto 0) = "11") then -- ST/LDST/SWAP/LDD/CASA
@@ -2024,7 +1960,6 @@ end;
           cnt := "00";
         when others => null;
         end case;
-	--end if; -- pk
       end case;
     end if;
 
@@ -2076,11 +2011,9 @@ end;
 
 -- register write address generation
 
-  --procedure rd_gen(r : registers; inst : word; wreg, swreg, ld : out std_ulogic; -- pk added swreg
-  procedure rd_gen(r : registers; inst : word; wreg, ld : out std_ulogic; -- pk added swreg
+  procedure rd_gen(r : registers; inst : word; wreg, ld : out std_ulogic; 
         rdo : out std_logic_vector(4 downto 0)) is
   variable write_reg : std_ulogic;
-  --variable write_sreg: std_ulogic; -- pk: write secure reg file
   variable op : std_logic_vector(1 downto 0);
   variable op2 : std_logic_vector(2 downto 0);
   variable op3 : std_logic_vector(5 downto 0);
@@ -2092,7 +2025,6 @@ end;
     op3   := inst(24 downto 19);
 
     write_reg := '0'; rd := inst(29 downto 25); ld := '0';
---	write_sreg := '0'; -- pk: write secure reg file
 
     case op is
     when CALL =>
@@ -2114,8 +2046,7 @@ end;
             end if;
           else write_reg := '1'; end if;
         -- when RETT | WRPSR | WRY | WRWIM | WRTBR | TICC | FLUSH => null;
-        --when RETT | WRPSR | WRWIM | WRTBR | TICC | FLUSH | WRSEC => null; -- bilgiday -- pk
-        when RETT | WRPSR | WRWIM | WRTBR | TICC | FLUSH => null; -- bilgiday -- pk
+        when RETT | WRPSR | WRWIM | WRTBR | TICC | FLUSH => null; -- bilgiday
         when WRY => -- bilgiday
 		 if (inst(29 downto 25) = "10110") then -- bilgiday asr22
 		   write_reg := r.w.wreg0;
@@ -2136,13 +2067,9 @@ end;
 		 end if;
         when FPOP1 | FPOP2 => null;
         when CPOP1 | CPOP2 => null;
---		when ORS => write_sreg := '1'; write_reg := '0'; -- pk: write secure reg file from regular reg file
-		--when BS | INVBS => write_reg := '1'; rd := inst(4 downto 0); -- pk: write bs/invbs result to y and rs2
         when others => write_reg := '1';
         end case;
       when others =>   -- LDST
-	 if (op3 /= ANDC8 and op3 /= ANDC16 and op3 /= XORC8 and op3 /= XORC16 and op3 /= XNORC8 and op3 /= XNORC16) then -- pk added the whole if  
-
         ld := not op3(2);
         if (op3(2) = '0') and not ((CPEN or FPEN) and (op3(5) = '1')) 
         then write_reg := '1'; end if;
@@ -2157,14 +2084,10 @@ end;
           when others =>
           end case;
         end if;
-	else --pk
-	  write_reg := '1'; --pk
-	end if; --pk
     end case;
 
     if (rd = "00000") then write_reg := '0'; end if;
     wreg := write_reg; rdo := rd;
---	swreg := write_sreg; -- pk: write secure reg file from regular reg file
   end;
 
 -- immediate data generation
@@ -2228,7 +2151,7 @@ end;
 -- EXE operation
 
   procedure alu_op(r : in registers; iop1, iop2 : in word; me_icc : std_logic_vector(3 downto 0);
-        my, ldbp : std_ulogic; aop1, aop2 : out word; aluop  : out std_logic_vector(3 downto 0); -- Pantea 2->3
+        my, ldbp : std_ulogic; aop1, aop2 : out word; aluop  : out std_logic_vector(2 downto 0);
         alusel : out std_logic_vector(1 downto 0); aluadd : out std_ulogic;
         shcnt : out std_logic_vector(4 downto 0); sari, shleft, ymsb, 
         mulins, divins, mulstep, macins, ldbp2, invop2 : out std_logic
@@ -2289,64 +2212,47 @@ end;
           aluop := EXE_DIV; alusel := EXE_RES_LOGIC; divins := '1';
         end if;
       when IAND | ANDCC => aluop := EXE_AND; alusel := EXE_RES_LOGIC;
-      when TIBSROT => aluop := EXE_TIBSROT; alusel := EXE_RES_LOGIC; -- pk 
       when ANDN | ANDNCC => aluop := EXE_ANDN; alusel := EXE_RES_LOGIC;
       when IOR | ORCC  => aluop := EXE_OR; alusel := EXE_RES_LOGIC;
       when ORN | ORNCC  => aluop := EXE_ORN; alusel := EXE_RES_LOGIC;
       when IXNOR | XNORCC  => aluop := EXE_XNOR; alusel := EXE_RES_LOGIC;
-      --when XORCC | IXOR | WRPSR | WRWIM | WRTBR | WRY | WRSEC | ORS | SOR => -- pk: added WRSEC | ORS | SOR
-      when XORCC | IXOR | WRPSR | WRWIM | WRTBR | WRY => -- pk: added WRSEC | ORS | SOR
+      when XORCC | IXOR | WRPSR | WRWIM | WRTBR | WRY  => 
         aluop := EXE_XOR; alusel := EXE_RES_LOGIC;
       when RDPSR | RDTBR | RDWIM => aluop := EXE_SPR;
       when RDY => aluop := EXE_RDY;
       when ISLL => aluop := EXE_SLL; alusel := EXE_RES_SHIFT; shleft := '1'; 
                    shcnt := not iop2(4 downto 0); invop2 := '1';
       when ISRL => aluop := EXE_SRL; alusel := EXE_RES_SHIFT; 
-      when "011101" => aluop := EXE_BS; alusel := EXE_RES_SHIFT; -- pk BS
-      when "011001" => aluop := EXE_INVBS; alusel := EXE_RES_SHIFT; -- pk INVBS 
-      when RED => aluop := EXE_RED; alusel := EXE_RES_SHIFT; -- pk RED 
-      when ANDOR => aluop := EXE_ANDOR; alusel := EXE_RES_SHIFT; -- pk ANDOR
-      when ORAND => aluop := EXE_ORAND; alusel := EXE_RES_SHIFT; -- pk ORAND
-      when FTCHK => aluop := EXE_FTCHK; alusel := EXE_RES_SHIFT; -- pk FTCHK
       when ISRA => aluop := EXE_SRA; alusel := EXE_RES_SHIFT; sari := iop1(31);
       when FPOP1 | FPOP2 =>
       when others =>
       end case;
     when others =>      -- LDST
-      case op3 is
-        when ANDC8 => aluop := EXE_ANDC8; alusel := EXE_RES_SHIFT; -- pk ANDC8 
-        when ANDC16 => aluop := EXE_ANDC16; alusel := EXE_RES_SHIFT; -- pk ANDC16 
-        when XORC8 => aluop := EXE_XORC8; alusel := EXE_RES_SHIFT; -- pk XORC8 
-        when XORC16 => aluop := EXE_XORC16; alusel := EXE_RES_SHIFT; -- pk XORC16 
-        when XNORC8 => aluop := EXE_XNORC8; alusel := EXE_RES_SHIFT; -- pk XNORC8 
-        when XNORC16 => aluop := EXE_XNORC16; alusel := EXE_RES_SHIFT; -- pk XNORC16 
+      case r.a.ctrl.cnt is
+      when "00" =>
+        alusel := EXE_RES_ADD;
+      when "01" =>
+        case op3 is
+        when LDD | LDDA | LDDC => alusel := EXE_RES_ADD;
+        when LDDF => alusel := EXE_RES_ADD;
+        when SWAP | SWAPA | LDSTUB | LDSTUBA | CASA => alusel := EXE_RES_ADD;
+        when STF | STDF =>
         when others =>
-          case r.a.ctrl.cnt is
-            when "00" =>
-               alusel := EXE_RES_ADD;
-            when "01" =>
-              case op3 is
-                when LDD | LDDA | LDDC => alusel := EXE_RES_ADD;
-                when LDDF => alusel := EXE_RES_ADD;
-                when SWAP | SWAPA | LDSTUB | LDSTUBA | CASA => alusel := EXE_RES_ADD;
-                when STF | STDF =>
-                when others =>
-                   aluop := EXE_PASS1;
-                    if op3(2) = '1' then
-                     if op3(1 downto 0) = "01" then aluop := EXE_STB;
-                   elsif op3(1 downto 0) = "10" then aluop := EXE_STH; end if;
-                    end if;
-              end case;
-            when "10" =>
-              aluop := EXE_PASS1;
-              if op3(2) = '1' then  -- ST
-                if (op3(3) and not op3(5) and not op3(1))= '1' then aluop := EXE_ONES; end if; -- LDSTUB
-              end if;
-              if CASAEN and (r.m.casa = '1') then
-                alusel := EXE_RES_ADD; aluadd := '0'; aop2 := not iop2; invop2 := '1';
-              end if;
-            when others =>
-          end case;
+          aluop := EXE_PASS1;
+          if op3(2) = '1' then 
+            if op3(1 downto 0) = "01" then aluop := EXE_STB;
+            elsif op3(1 downto 0) = "10" then aluop := EXE_STH; end if;
+          end if;
+        end case;
+      when "10" =>
+        aluop := EXE_PASS1;
+        if op3(2) = '1' then  -- ST
+          if (op3(3) and not op3(5) and not op3(1))= '1' then aluop := EXE_ONES; end if; -- LDSTUB
+        end if;
+        if CASAEN and (r.m.casa = '1') then
+          alusel := EXE_RES_ADD; aluadd := '0'; aop2 := not iop2; invop2 := '1';
+        end if;
+      when others =>
       end case;
     end case;
   end;
@@ -2364,7 +2270,7 @@ end;
 
   procedure op_mux(r : in registers; rfd, ed, md, xd, im : in word; 
         rsel : in std_logic_vector(2 downto 0); 
-        ldbp : out std_ulogic; d : out word; id : std_logic) is --; srfd : in word) is -- pk added srfd
+        ldbp : out std_ulogic; d : out word; id : std_logic) is
   begin
     ldbp := '0';
     case rsel is
@@ -2375,7 +2281,6 @@ end;
     when "100" => d := im;
     when "101" => d := (others => '0');
     when "110" => d := r.w.result;
-	--when "111" => d := srfd; -- pk
     when others => d := (others => '-');
     end case;
     if CASAEN and (r.a.ctrl.cnt = "10") and ((r.m.casa and not id) = '1') then ldbp := '1'; end if;
@@ -2384,7 +2289,6 @@ end;
   procedure op_find(r : in registers; ldchkra : std_ulogic; ldchkex : std_ulogic;
          rs1 : std_logic_vector(4 downto 0); ra : rfatype; im : boolean; rfe : out std_ulogic; 
         osel : out std_logic_vector(2 downto 0); ldcheck : std_ulogic) is
-	--	srd : std_ulogic) is -- pk
   begin
     rfe := '0';
     if im then osel := "100";
@@ -2393,8 +2297,7 @@ end;
     elsif ((r.e.ctrl.wreg and ldchkex) = '1') and (ra = r.e.ctrl.rd) then osel := "010";                                        
     elsif (r.m.ctrl.wreg = '1') and (ra = r.m.ctrl.rd) then osel := "011";             
     elsif (irfwt = 0) and (r.x.ctrl.wreg = '1') and (ra = r.x.ctrl.rd) then osel := "110"; 
-    --elsif srd = '1' then osel := "111"; rfe := ldcheck; -- pk get data from secure reg file
-	else  osel := "000"; rfe := ldcheck; end if;
+    else  osel := "000"; rfe := ldcheck; end if;
   end;
 
 -- generate carry-in for alu
@@ -2425,42 +2328,13 @@ end;
     end case;
   end;
 
-  procedure logic_op(r : registers; aluin1, aluin2, mey, shiftres : word; 
+  procedure logic_op(r : registers; aluin1, aluin2, mey : word; 
         ymsb : std_ulogic; logicres, y : out word) is
   variable logicout : word;
   begin
     case r.e.aluop is
     when EXE_AND   => logicout := aluin1 and aluin2;
-	-- pk
-    when EXE_TIBSROT   => 
-	case aluin2(4 downto 0) is
-		when "00010" => logicout := aluin1(30) & aluin1(31) & aluin1(28) & aluin1(29) & 
-					aluin1(26) & aluin1(27) & aluin1(24) & aluin1(25) &
-					aluin1(22) & aluin1(23) & aluin1(20) & aluin1(21) &
-					aluin1(18) & aluin1(19) & aluin1(16) & aluin1(17) &
-					aluin1(14) & aluin1(15) & aluin1(12) & aluin1(13) &
-					aluin1(10) & aluin1(11) & aluin1(8) & aluin1(9) &
-					aluin1(6) & aluin1(7) & aluin1(4) & aluin1(5) &
-					aluin1(2) & aluin1(3) & aluin1(0) & aluin1(1);
-
-		when "00100" => logicout :=  aluin1(30) & aluin1(29) & aluin1(28) & aluin1(31) & 
-					aluin1(26) & aluin1(25) & aluin1(24) & aluin1(27) &
-					aluin1(22) & aluin1(21) & aluin1(20) & aluin1(23) & 
-					aluin1(18) & aluin1(17) & aluin1(16) & aluin1(19) &
-					aluin1(14) & aluin1(13) & aluin1(12) & aluin1(15) & 
-					aluin1(10) & aluin1(9) & aluin1(8) & aluin1(11) &
- 					aluin1(6) & aluin1(5) & aluin1(4) & aluin1(7) & 
-					aluin1(2) & aluin1(1) & aluin1(0) & aluin1(3);
-
-		when others => logicout := aluin1;
-	end case;
-
-  --  when EXE_TIBSROT   => logicout := 	aluin1(30) & aluin1(29) & aluin1(28) & aluin1(31) & aluin1(26) & aluin1(25) & aluin1(24) & aluin1(27) &
---										aluin1(22) & aluin1(21) & aluin1(20) & aluin1(23) & aluin1(18) & aluin1(17) & aluin1(16) & aluin1(19) &
---										aluin1(14) & aluin1(13) & aluin1(12) & aluin1(15) & aluin1(10) & aluin1(9) & aluin1(8) & aluin1(11) &
---										aluin1(6) & aluin1(5) & aluin1(4) & aluin1(7) & aluin1(2) & aluin1(1) & aluin1(0) & aluin1(3);
-    ------------------------
-	when EXE_ANDN  => logicout := aluin1 and not aluin2;
+    when EXE_ANDN  => logicout := aluin1 and not aluin2;
     when EXE_OR    => logicout := aluin1 or aluin2;
     when EXE_ORN   => logicout := aluin1 or not aluin2;
     when EXE_XOR   => logicout := aluin1 xor aluin2;
@@ -2472,37 +2346,6 @@ end;
     end case;
     if (r.e.ctrl.wy and r.e.mulstep) = '1' then 
       y := ymsb & r.m.y(31 downto 1); 
-	-- pk :
-    elsif (r.e.ctrl.wy = '1' and (r.e.aluop = EXE_BS or r.e.aluop = EXE_INVBS or r.e.aluop = EXE_RED)) then 
-	  if (r.e.aluop = EXE_BS) then -- BS
-	    y := aluin1(31) & aluin2(31) & aluin1(30) & aluin2(30) & aluin1(29) & aluin2(29) & aluin1(28) & aluin2(28) &
-		aluin1(27) & aluin2(27) & aluin1(26) & aluin2(26) & aluin1(25) & aluin2(25) & aluin1(24) & aluin2(24) &
-		aluin1(23) & aluin2(23) & aluin1(22) & aluin2(22) & aluin1(21) & aluin2(21) & aluin1(20) & aluin2(20) &
-		aluin1(19) & aluin2(19) & aluin1(18) & aluin2(18) & aluin1(17) & aluin2(17) & aluin1(16) & aluin2(16);
-	 elsif (r.e.aluop = EXE_INVBS) then -- INVBS
-	    y := aluin1(31) & aluin1(29) & aluin1(27) & aluin1(25) & aluin1(23) & aluin1(21) & aluin1(19) & aluin1(17) &
-		aluin1(15) & aluin1(13) & aluin1(11) & aluin1(9) & aluin1(7) & aluin1(5) & aluin1(3) & aluin1(1) &
-		aluin2(31) & aluin2(29) & aluin2(27) & aluin2(25) & aluin2(23) & aluin2(21) & aluin2(19) & aluin2(17) &
-		aluin2(15) & aluin2(13) & aluin2(11) & aluin2(9) & aluin2(7) & aluin2(5) & aluin2(3) & aluin2(1);
-	 else -- RED
-	     case aluin2(4 downto 0) is 
-		when "00010" => 
-			y := aluin1(31 downto 16) & aluin1(31 downto 16);
-		when "00011" => 
-			y := (not aluin1(31 downto 16)) & (aluin1(31 downto 16));
-		when "00100" => 
-			y := aluin1(15 downto 8) & aluin1(15 downto 8) & aluin1(15 downto 8) & aluin1(15 downto 8);
-		when "00101" =>
-			y := (not aluin1(15 downto 8)) & aluin1(15 downto 8) & (not aluin1(15 downto 8)) & aluin1(15 downto 8);
-		when "00110" =>
-			y := aluin1(31 downto 24) & aluin1(31 downto 24) & aluin1(31 downto 24) & aluin1(31 downto 24); 
-		when "00111" => 
-                        y := (not aluin1(31 downto 24)) & aluin1(31 downto 24) & (not aluin1(31 downto 24)) & aluin1(31 downto 24);
-		when others =>
-			y := aluin1; 
-	     end case;  	
-	 end if;
-	-------------------------------------------
     elsif r.e.ctrl.wy = '1' then y := logicout;
     elsif r.m.ctrl.wy = '1' then y := mey; 
     elsif MACPIPE and (r.x.mac = '1') then y := mulo.result(63 downto 32);
@@ -2511,293 +2354,6 @@ end;
     logicres := logicout;
   end;
 
-  -- pk
-  procedure shift_op(r : registers; aluin1, aluin2 : word; 
-			shcnt : std_logic_vector(4 downto 0); sari : std_ulogic; 
-			shiftres : out word) is
-  variable shiftout : word;
-  begin
-  
-    case r.e.aluop is 
-    when EXE_BS => shiftout := aluin1(15) & aluin2(15) & aluin1(14) & aluin2(14) & aluin1(13) & aluin2(13) & aluin1(12) & aluin2(12) &
-				aluin1(11) & aluin2(11) & aluin1(10) & aluin2(10) & aluin1(9) & aluin2(9) & aluin1(8) & aluin2(8) &
-				aluin1(7) & aluin2(7) & aluin1(6) & aluin2(6) & aluin1(5) & aluin2(5) & aluin1(4) & aluin2(4) &
-				aluin1(3) & aluin2(3) & aluin1(2) & aluin2(2) & aluin1(1) & aluin2(1) & aluin1(0) & aluin2(0);
-    
-    when EXE_INVBS => shiftout := aluin1(30) & aluin1(28) & aluin1(26) & aluin1(24) & aluin1(22) & aluin1(20) & aluin1(18) & aluin1(16) &
-		    	aluin1(14) & aluin1(12) & aluin1(10) & aluin1(8) & aluin1(6) & aluin1(4) & aluin1(2) & aluin1(0) &
-		    	aluin2(30) & aluin2(28) & aluin2(26) & aluin2(24) & aluin2(22) & aluin2(20) & aluin2(18) & aluin2(16) &
-		    	aluin2(14) & aluin2(12) & aluin2(10) & aluin2(8) & aluin2(6) & aluin2(4) & aluin2(2) & aluin2(0);
-    
-    when EXE_ANDOR => shiftout := (aluin1(31) or aluin2(31)) & (aluin1(30) and aluin2(30)) &
-				  (aluin1(29) or aluin2(29)) & (aluin1(28) and aluin2(28)) &
-				  (aluin1(27) or aluin2(27)) & (aluin1(26) and aluin2(26)) & 
-				  (aluin1(25) or aluin2(25)) & (aluin1(24) and aluin2(24)) & 
-				  (aluin1(23) or aluin2(23)) & (aluin1(22) and aluin2(22)) & 
-				  (aluin1(21) or aluin2(21)) & (aluin1(20) and aluin2(20)) & 
-				  (aluin1(19) or aluin2(19)) & (aluin1(18) and aluin2(18)) & 
-				  (aluin1(17) or aluin2(17)) & (aluin1(16) and aluin2(16)) & 
-				  (aluin1(15) or aluin2(15)) & (aluin1(14) and aluin2(14)) & 
-				  (aluin1(13) or aluin2(13)) & (aluin1(12) and aluin2(12)) & 
-				  (aluin1(11) or aluin2(11)) & (aluin1(10) and aluin2(10)) & 
-				  (aluin1(9) or aluin2(9)) & (aluin1(8) and aluin2(8)) & 
-				  (aluin1(7) or aluin2(7)) & (aluin1(6) and aluin2(6)) & 
-				  (aluin1(5) or aluin2(5)) & (aluin1(4) and aluin2(4)) & 
-				  (aluin1(3) or aluin2(3)) & (aluin1(2) and aluin2(2)) & 
-				  (aluin1(1) or aluin2(1)) & (aluin1(0) and aluin2(0));
-
-    when EXE_ORAND => shiftout := (aluin1(31) and aluin2(31)) & (aluin1(30) or aluin2(30)) & 
-                                  (aluin1(29) and aluin2(29)) & (aluin1(28) or aluin2(28)) & 
-                                  (aluin1(27) and aluin2(27)) & (aluin1(26) or aluin2(26)) & 
-                                  (aluin1(25) and aluin2(25)) & (aluin1(24) or aluin2(24)) & 
-                                  (aluin1(23) and aluin2(23)) & (aluin1(22) or aluin2(22)) & 
-                                  (aluin1(21) and aluin2(21)) & (aluin1(20) or aluin2(20)) & 
-                                  (aluin1(19) and aluin2(19)) & (aluin1(18) or aluin2(18)) & 
-                                  (aluin1(17) and aluin2(17)) & (aluin1(16) or aluin2(16)) & 
-                                  (aluin1(15) and aluin2(15)) & (aluin1(14) or aluin2(14)) & 
-                                  (aluin1(13) and aluin2(13)) & (aluin1(12) or aluin2(12)) & 
-                                  (aluin1(11) and aluin2(11)) & (aluin1(10) or aluin2(10)) & 
-                                  (aluin1(9) and aluin2(9)) & (aluin1(8) or aluin2(8)) & 
-                                  (aluin1(7) and aluin2(7)) & (aluin1(6) or aluin2(6)) & 
-                                  (aluin1(5) and aluin2(5)) & (aluin1(4) or aluin2(4)) & 
-                                  (aluin1(3) and aluin2(3)) & (aluin1(2) or aluin2(2)) & 
-                                  (aluin1(1) and aluin2(1)) & (aluin1(0) or aluin2(0));
-
-    when EXE_RED => 
-	case aluin2(4 downto 0) is 
-            when "00010" =>
-                shiftout := aluin1(15 downto 0) & aluin1(15 downto 0);
-            when "00011" =>
-                shiftout := (not aluin1(15 downto 0)) & (aluin1(15 downto 0));
-            when "00100" =>
-                shiftout := aluin1(7 downto 0) & aluin1(7 downto 0) & aluin1(7 downto 0) & aluin1(7 downto 0);
-            when "00101" =>
-                shiftout := (not aluin1(7 downto 0)) & aluin1(7 downto 0) & (not aluin1(7 downto 0)) & aluin1(7 downto 0);
-            when "00110" =>
-                shiftout := aluin1(23 downto 16) & aluin1(23 downto 16) & aluin1(23 downto 16) & aluin1(23 downto 16);
-            when "00111" =>
-                shiftout := (not aluin1(23 downto 16)) & aluin1(23 downto 16) & (not aluin1(23 downto 16)) & aluin1(23 downto 16);
-            when others =>
-		shiftout := aluin1;
-        end case;
-   
-    when EXE_FTCHK =>
-	case aluin2(4 downto 0) is 
-	    when "00010" =>
-		shiftout(31 downto 16) := (others => '0');
-		shiftout(15 downto 0) := (aluin1(31) xor aluin1(15)) &
-					 (aluin1(30) xor aluin1(14)) &
-                                         (aluin1(29) xor aluin1(13)) &
-                                         (aluin1(28) xor aluin1(12)) &
-                                         (aluin1(27) xor aluin1(11)) &
-                                         (aluin1(26) xor aluin1(10)) &
-                                         (aluin1(25) xor aluin1(9)) &
-                                         (aluin1(24) xor aluin1(8)) &
-                                         (aluin1(23) xor aluin1(7)) &
-                                         (aluin1(22) xor aluin1(6)) &
-                                         (aluin1(21) xor aluin1(5)) &
-                                         (aluin1(20) xor aluin1(4)) &
-                                         (aluin1(19) xor aluin1(3)) &
-                                         (aluin1(18) xor aluin1(2)) &
-                                         (aluin1(17) xor aluin1(1)) &
-                                         (aluin1(16) xor aluin1(0)) ;
-	    when "01010" =>
-                shiftout(31 downto 16) := (aluin1(31) xnor aluin1(15)) &
-                                         (aluin1(30) xnor aluin1(14)) &
-                                         (aluin1(29) xnor aluin1(13)) &
-                                         (aluin1(28) xnor aluin1(12)) &
-                                         (aluin1(27) xnor aluin1(11)) &
-                                         (aluin1(26) xnor aluin1(10)) &
-                                         (aluin1(25) xnor aluin1(9)) &
-                                         (aluin1(24) xnor aluin1(8)) &
-                                         (aluin1(23) xnor aluin1(7)) &
-                                         (aluin1(22) xnor aluin1(6)) &
-                                         (aluin1(21) xnor aluin1(5)) &
-                                         (aluin1(20) xnor aluin1(4)) &
-                                         (aluin1(19) xnor aluin1(3)) &
-                                         (aluin1(18) xnor aluin1(2)) &
-                                         (aluin1(17) xnor aluin1(1)) &
-                                         (aluin1(16) xnor aluin1(0)) ;
-
-                shiftout(15 downto 0) := (aluin1(31) xor aluin1(15)) &
-                                         (aluin1(30) xor aluin1(14)) &
-                                         (aluin1(29) xor aluin1(13)) &
-                                         (aluin1(28) xor aluin1(12)) &
-                                         (aluin1(27) xor aluin1(11)) &
-                                         (aluin1(26) xor aluin1(10)) &
-                                         (aluin1(25) xor aluin1(9)) &
-                                         (aluin1(24) xor aluin1(8)) &
-                                         (aluin1(23) xor aluin1(7)) &
-                                         (aluin1(22) xor aluin1(6)) &
-                                         (aluin1(21) xor aluin1(5)) &
-                                         (aluin1(20) xor aluin1(4)) &
-                                         (aluin1(19) xor aluin1(3)) &
-                                         (aluin1(18) xor aluin1(2)) &
-                                         (aluin1(17) xor aluin1(1)) &
-                                         (aluin1(16) xor aluin1(0)) ;
-	    when "00011" =>
-                shiftout(31 downto 16) := (others => '0');
-                shiftout(15 downto 0) := (aluin1(31) xnor aluin1(15)) &
-                                         (aluin1(30) xnor aluin1(14)) &
-                                         (aluin1(29) xnor aluin1(13)) &
-                                         (aluin1(28) xnor aluin1(12)) &
-                                         (aluin1(27) xnor aluin1(11)) &
-                                         (aluin1(26) xnor aluin1(10)) &
-                                         (aluin1(25) xnor aluin1(9)) &
-                                         (aluin1(24) xnor aluin1(8)) &
-                                         (aluin1(23) xnor aluin1(7)) &
-                                         (aluin1(22) xnor aluin1(6)) &
-                                         (aluin1(21) xnor aluin1(5)) &
-                                         (aluin1(20) xnor aluin1(4)) &
-                                         (aluin1(19) xnor aluin1(3)) &
-                                         (aluin1(18) xnor aluin1(2)) &
-                                         (aluin1(17) xnor aluin1(1)) &
-                                         (aluin1(16) xnor aluin1(0)) ;
-	    when "01011" =>
-                shiftout(31 downto 16) := (aluin1(31) xor aluin1(15)) &
-                                         (aluin1(30) xor aluin1(14)) &
-                                         (aluin1(29) xor aluin1(13)) &
-                                         (aluin1(28) xor aluin1(12)) &
-                                         (aluin1(27) xor aluin1(11)) &
-                                         (aluin1(26) xor aluin1(10)) &
-                                         (aluin1(25) xor aluin1(9)) & 
-                                         (aluin1(24) xor aluin1(8)) & 
-                                         (aluin1(23) xor aluin1(7)) & 
-                                         (aluin1(22) xor aluin1(6)) & 
-                                         (aluin1(21) xor aluin1(5)) &
-                                         (aluin1(20) xor aluin1(4)) &
-                                         (aluin1(19) xor aluin1(3)) &
-                                         (aluin1(18) xor aluin1(2)) &
-                                         (aluin1(17) xor aluin1(1)) &
-                                         (aluin1(16) xor aluin1(0)) ;
-
-                shiftout(15 downto 0) := (aluin1(31) xnor aluin1(15)) &
-                                         (aluin1(30) xnor aluin1(14)) &
-                                         (aluin1(29) xnor aluin1(13)) &
-                                         (aluin1(28) xnor aluin1(12)) &
-                                         (aluin1(27) xnor aluin1(11)) &
-                                         (aluin1(26) xnor aluin1(10)) &
-                                         (aluin1(25) xnor aluin1(9)) &
-                                         (aluin1(24) xnor aluin1(8)) &
-                                         (aluin1(23) xnor aluin1(7)) &
-                                         (aluin1(22) xnor aluin1(6)) &
-                                         (aluin1(21) xnor aluin1(5)) &
-                                         (aluin1(20) xnor aluin1(4)) &
-                                         (aluin1(19) xnor aluin1(3)) &
-                                         (aluin1(18) xnor aluin1(2)) &
-                                         (aluin1(17) xnor aluin1(1)) &
-                                         (aluin1(16) xnor aluin1(0)) ;
-	    when "00100" =>
-                shiftout(31 downto 8) := (others => '0');
-                shiftout(7 downto 0) := ((aluin1(31) xor aluin1(7)) or (aluin1(23) xor aluin1(7)) or (aluin1(15) xor aluin1(7))) &
-					((aluin1(30) xor aluin1(6)) or (aluin1(22) xor aluin1(6)) or (aluin1(14) xor aluin1(6))) &
-                                        ((aluin1(29) xor aluin1(5)) or (aluin1(21) xor aluin1(5)) or (aluin1(13) xor aluin1(5))) &
-                                        ((aluin1(28) xor aluin1(4)) or (aluin1(20) xor aluin1(4)) or (aluin1(12) xor aluin1(4))) &
-                                        ((aluin1(27) xor aluin1(3)) or (aluin1(19) xor aluin1(3)) or (aluin1(11) xor aluin1(3))) &
-                                        ((aluin1(26) xor aluin1(2)) or (aluin1(18) xor aluin1(2)) or (aluin1(10) xor aluin1(2))) &
-                                        ((aluin1(25) xor aluin1(1)) or (aluin1(17) xor aluin1(1)) or (aluin1(9) xor aluin1(1))) &
-                                        ((aluin1(24) xor aluin1(0)) or (aluin1(16) xor aluin1(0)) or (aluin1(8) xor aluin1(0))) ;
-	
-	    when "01100" =>
-                shiftout(31 downto 24) := ((aluin1(31) xnor aluin1(7)) and (aluin1(23) xnor aluin1(7)) and (aluin1(15) xnor aluin1(7))) &
-                                        ((aluin1(30) xnor aluin1(6)) and (aluin1(22) xnor aluin1(6)) and (aluin1(14) xnor aluin1(6))) &
-                                        ((aluin1(29) xnor aluin1(5)) and (aluin1(21) xnor aluin1(5)) and (aluin1(13) xnor aluin1(5))) &
-                                        ((aluin1(28) xnor aluin1(4)) and (aluin1(20) xnor aluin1(4)) and (aluin1(12) xnor aluin1(4))) &
-                                        ((aluin1(27) xnor aluin1(3)) and (aluin1(19) xnor aluin1(3)) and (aluin1(11) xnor aluin1(3))) &
-                                        ((aluin1(26) xnor aluin1(2)) and (aluin1(18) xnor aluin1(2)) and (aluin1(10) xnor aluin1(2))) &
-                                        ((aluin1(25) xnor aluin1(1)) and (aluin1(17) xnor aluin1(1)) and (aluin1(9) xnor aluin1(1))) &
-                                        ((aluin1(24) xnor aluin1(0)) and (aluin1(16) xnor aluin1(0)) and (aluin1(8) xnor aluin1(0))) ;
-
-                shiftout(23 downto 16) := ((aluin1(31) xor aluin1(7)) or (aluin1(23) xor aluin1(7)) or (aluin1(15) xor aluin1(7))) &
-                                        ((aluin1(30) xor aluin1(6)) or (aluin1(22) xor aluin1(6)) or (aluin1(14) xor aluin1(6))) &
-                                        ((aluin1(29) xor aluin1(5)) or (aluin1(21) xor aluin1(5)) or (aluin1(13) xor aluin1(5))) &
-                                        ((aluin1(28) xor aluin1(4)) or (aluin1(20) xor aluin1(4)) or (aluin1(12) xor aluin1(4))) &
-                                        ((aluin1(27) xor aluin1(3)) or (aluin1(19) xor aluin1(3)) or (aluin1(11) xor aluin1(3))) &
-                                        ((aluin1(26) xor aluin1(2)) or (aluin1(18) xor aluin1(2)) or (aluin1(10) xor aluin1(2))) &
-                                        ((aluin1(25) xor aluin1(1)) or (aluin1(17) xor aluin1(1)) or (aluin1(9) xor aluin1(1))) &
-                                        ((aluin1(24) xor aluin1(0)) or (aluin1(16) xor aluin1(0)) or (aluin1(8) xor aluin1(0))) ;
-
-                shiftout(15 downto 8) := ((aluin1(31) xnor aluin1(7)) and (aluin1(23) xnor aluin1(7)) and (aluin1(15) xnor aluin1(7))) &
-                                        ((aluin1(30) xnor aluin1(6)) and (aluin1(22) xnor aluin1(6)) and (aluin1(14) xnor aluin1(6))) &
-                                        ((aluin1(29) xnor aluin1(5)) and (aluin1(21) xnor aluin1(5)) and (aluin1(13) xnor aluin1(5))) &
-                                        ((aluin1(28) xnor aluin1(4)) and (aluin1(20) xnor aluin1(4)) and (aluin1(12) xnor aluin1(4))) &
-                                        ((aluin1(27) xnor aluin1(3)) and (aluin1(19) xnor aluin1(3)) and (aluin1(11) xnor aluin1(3))) &
-                                        ((aluin1(26) xnor aluin1(2)) and (aluin1(18) xnor aluin1(2)) and (aluin1(10) xnor aluin1(2))) &
-                                        ((aluin1(25) xnor aluin1(1)) and (aluin1(17) xnor aluin1(1)) and (aluin1(9) xnor aluin1(1))) &
-                                        ((aluin1(24) xnor aluin1(0)) and (aluin1(16) xnor aluin1(0)) and (aluin1(8) xnor aluin1(0))) ;
-
-                shiftout(7 downto 0) := ((aluin1(31) xor aluin1(7)) or (aluin1(23) xor aluin1(7)) or (aluin1(15) xor aluin1(7))) &
-                                        ((aluin1(30) xor aluin1(6)) or (aluin1(22) xor aluin1(6)) or (aluin1(14) xor aluin1(6))) &
-                                        ((aluin1(29) xor aluin1(5)) or (aluin1(21) xor aluin1(5)) or (aluin1(13) xor aluin1(5))) &
-                                        ((aluin1(28) xor aluin1(4)) or (aluin1(20) xor aluin1(4)) or (aluin1(12) xor aluin1(4))) &
-                                        ((aluin1(27) xor aluin1(3)) or (aluin1(19) xor aluin1(3)) or (aluin1(11) xor aluin1(3))) &
-                                        ((aluin1(26) xor aluin1(2)) or (aluin1(18) xor aluin1(2)) or (aluin1(10) xor aluin1(2))) &
-                                        ((aluin1(25) xor aluin1(1)) or (aluin1(17) xor aluin1(1)) or (aluin1(9) xor aluin1(1))) &
-                                        ((aluin1(24) xor aluin1(0)) or (aluin1(16) xor aluin1(0)) or (aluin1(8) xor aluin1(0))) ;
-
-	    when "00101" =>
-                shiftout(31 downto 8) := (others => '0');
-                shiftout(7 downto 0) := ((aluin1(31) xnor aluin1(7)) or (aluin1(23) xor aluin1(7)) or (aluin1(15) xnor aluin1(7))) &
-                                        ((aluin1(30) xnor aluin1(6)) or (aluin1(22) xor aluin1(6)) or (aluin1(14) xnor aluin1(6))) &
-                                        ((aluin1(29) xnor aluin1(5)) or (aluin1(21) xor aluin1(5)) or (aluin1(13) xnor aluin1(5))) &
-                                        ((aluin1(28) xnor aluin1(4)) or (aluin1(20) xor aluin1(4)) or (aluin1(12) xnor aluin1(4))) &
-                                        ((aluin1(27) xnor aluin1(3)) or (aluin1(19) xor aluin1(3)) or (aluin1(11) xnor aluin1(3))) &
-                                        ((aluin1(26) xnor aluin1(2)) or (aluin1(18) xor aluin1(2)) or (aluin1(10) xnor aluin1(2))) &
-                                        ((aluin1(25) xnor aluin1(1)) or (aluin1(17) xor aluin1(1)) or (aluin1(9) xnor aluin1(1))) &
-                                        ((aluin1(24) xnor aluin1(0)) or (aluin1(16) xor aluin1(0)) or (aluin1(8) xnor aluin1(0))) ;
-	    when "01101" =>
-                shiftout(31 downto 24) := ((aluin1(31) xor aluin1(7)) and (aluin1(23) xnor aluin1(7)) and (aluin1(15) xor aluin1(7))) &
-                                        ((aluin1(30) xor aluin1(6)) and (aluin1(22) xnor aluin1(6)) and (aluin1(14) xor aluin1(6))) &
-                                        ((aluin1(29) xor aluin1(5)) and (aluin1(21) xnor aluin1(5)) and (aluin1(13) xor aluin1(5))) &
-                                        ((aluin1(28) xor aluin1(4)) and (aluin1(20) xnor aluin1(4)) and (aluin1(12) xor aluin1(4))) &
-                                        ((aluin1(27) xor aluin1(3)) and (aluin1(19) xnor aluin1(3)) and (aluin1(11) xor aluin1(3))) &
-                                        ((aluin1(26) xor aluin1(2)) and (aluin1(18) xnor aluin1(2)) and (aluin1(10) xor aluin1(2))) &
-                                        ((aluin1(25) xor aluin1(1)) and (aluin1(17) xnor aluin1(1)) and (aluin1(9) xor aluin1(1))) &
-                                        ((aluin1(24) xor aluin1(0)) and (aluin1(16) xnor aluin1(0)) and (aluin1(8) xor aluin1(0))) ;
-
-                shiftout(23 downto 16) := ((aluin1(31) xnor aluin1(7)) or (aluin1(23) xor aluin1(7)) or (aluin1(15) xnor aluin1(7))) &
-                                        ((aluin1(30) xnor aluin1(6)) or (aluin1(22) xor aluin1(6)) or (aluin1(14) xnor aluin1(6))) &
-                                        ((aluin1(29) xnor aluin1(5)) or (aluin1(21) xor aluin1(5)) or (aluin1(13) xnor aluin1(5))) & 
-                                        ((aluin1(28) xnor aluin1(4)) or (aluin1(20) xor aluin1(4)) or (aluin1(12) xnor aluin1(4))) &
-                                        ((aluin1(27) xnor aluin1(3)) or (aluin1(19) xor aluin1(3)) or (aluin1(11) xnor aluin1(3))) & 
-                                        ((aluin1(26) xnor aluin1(2)) or (aluin1(18) xor aluin1(2)) or (aluin1(10) xnor aluin1(2))) &
-                                        ((aluin1(25) xnor aluin1(1)) or (aluin1(17) xor aluin1(1)) or (aluin1(9) xnor aluin1(1))) &
-                                        ((aluin1(24) xnor aluin1(0)) or (aluin1(16) xor aluin1(0)) or (aluin1(8) xnor aluin1(0))) ;
-
-                shiftout(15 downto 8) := ((aluin1(31) xor aluin1(7)) and (aluin1(23) xnor aluin1(7)) and (aluin1(15) xor aluin1(7))) &
-                                        ((aluin1(30) xor aluin1(6)) and (aluin1(22) xnor aluin1(6)) and (aluin1(14) xor aluin1(6))) &
-                                        ((aluin1(29) xor aluin1(5)) and (aluin1(21) xnor aluin1(5)) and (aluin1(13) xor aluin1(5))) & 
-                                        ((aluin1(28) xor aluin1(4)) and (aluin1(20) xnor aluin1(4)) and (aluin1(12) xor aluin1(4))) &
-                                        ((aluin1(27) xor aluin1(3)) and (aluin1(19) xnor aluin1(3)) and (aluin1(11) xor aluin1(3))) & 
-                                        ((aluin1(26) xor aluin1(2)) and (aluin1(18) xnor aluin1(2)) and (aluin1(10) xor aluin1(2))) &
-                                        ((aluin1(25) xor aluin1(1)) and (aluin1(17) xnor aluin1(1)) and (aluin1(9) xor aluin1(1))) &
-                                        ((aluin1(24) xor aluin1(0)) and (aluin1(16) xnor aluin1(0)) and (aluin1(8) xor aluin1(0))) ;
-
-                shiftout(7 downto 0) := ((aluin1(31) xnor aluin1(7)) or (aluin1(23) xor aluin1(7)) or (aluin1(15) xnor aluin1(7))) &
-                                        ((aluin1(30) xnor aluin1(6)) or (aluin1(22) xor aluin1(6)) or (aluin1(14) xnor aluin1(6))) &
-                                        ((aluin1(29) xnor aluin1(5)) or (aluin1(21) xor aluin1(5)) or (aluin1(13) xnor aluin1(5))) &
-                                        ((aluin1(28) xnor aluin1(4)) or (aluin1(20) xor aluin1(4)) or (aluin1(12) xnor aluin1(4))) &
-                                        ((aluin1(27) xnor aluin1(3)) or (aluin1(19) xor aluin1(3)) or (aluin1(11) xnor aluin1(3))) &
-                                        ((aluin1(26) xnor aluin1(2)) or (aluin1(18) xor aluin1(2)) or (aluin1(10) xnor aluin1(2))) &
-                                        ((aluin1(25) xnor aluin1(1)) or (aluin1(17) xor aluin1(1)) or (aluin1(9) xnor aluin1(1))) &
-                                        ((aluin1(24) xnor aluin1(0)) or (aluin1(16) xor aluin1(0)) or (aluin1(8) xnor aluin1(0))) ;
-
-	    when others =>
-		shiftout := (others => '1');
-	end case;
-    when EXE_ANDC8 => shiftout := (aluin1(31 downto 24) or aluin2(31 downto 24)) & (aluin1(23 downto 16) and aluin2(23 downto 16)) & (aluin1(15 downto 8) or aluin2(15 downto 8)) & (aluin1(7 downto 0) and aluin2(7 downto 0));
-    when EXE_ANDC16 => shiftout := (aluin1(31 downto 16) or aluin2(31 downto 16)) & (aluin1(15 downto 0) and aluin2(15 downto 0));
-    when EXE_XORC8 => shiftout := (aluin1(31 downto 24) xnor aluin2(31 downto 24)) & (aluin1(23 downto 16) xor aluin2(23 downto 16)) & (aluin1(15 downto 8) xnor aluin2(15 downto 8)) & (aluin1(7 downto 0) xor aluin2(7 downto 0));
-    when EXE_XORC16 => shiftout := (aluin1(31 downto 16) xnor aluin2(31 downto 16)) & (aluin1(15 downto 0) xor aluin2(15 downto 0));
-    when EXE_XNORC8 => shiftout := (aluin1(31 downto 24) xor aluin2(31 downto 24)) & (aluin1(23 downto 16) xnor aluin2(23 downto 16)) & (aluin1(15 downto 8) xor aluin2(15 downto 8)) & (aluin1(7 downto 0) xnor aluin2(7 downto 0));
-    when EXE_XNORC16 => shiftout := (aluin1(31 downto 16) xor aluin2(31 downto 16)) & (aluin1(15 downto 0) xnor aluin2(15 downto 0));
-    when others => shiftout := shift(r, aluin1, aluin2, shcnt, sari);
-    end case;
-    shiftres := shiftout;
-  end;
-  
-  
-  
   function st_align(size : std_logic_vector(1 downto 0); bpdata : word) return word is
   variable edata : word;
   begin
@@ -3065,8 +2621,6 @@ end;
           end case;
         end if;
       when LDST =>
-           if (op3 /= ANDC8 and op3 /= ANDC16 and op3 /= XORC8 and op3 /= XORC16 and op3 /= XNORC8 and op3 /= XNORC16) then -- pk added the whole if  
-
           case r.e.ctrl.cnt is
           when "00" =>
             dci.read := op3(3) or not op3(2);   -- LD/LDST/SWAP/CASA
@@ -3092,7 +2646,6 @@ end;
             dci.enaddr := '0';
           end if;
           if (CASAEN and (op3(5 downto 4) = "11")) then mcasa := '1'; end if;
-	  end if; -- pk
       when others => null;
       end case;
     end if;
@@ -3113,9 +2666,6 @@ end;
   begin
     edata2 := edata; eres2 := eres;
     op := r.e.ctrl.inst(31 downto 30); op3 := r.e.ctrl.inst(24 downto 19);
-   
-    if (op3 /= ANDC8 and op3 /= ANDC16 and op3 /= XORC8 and op3 /= XORC16 and op3 /= XNORC8 and op3 /= XNORC16) then -- pk added the whole if  
-
     if FPEN then
       if FPEN and (op = LDST) and  ((op3(5 downto 4) & op3(2)) = "101") and (r.e.ctrl.cnt /= "00") then
         edata2 := fpstdata; eres2 := fpstdata;
@@ -3124,7 +2674,6 @@ end;
     if CASAEN and (r.m.casa = '1') and (r.e.ctrl.cnt = "10") then
       edata2 := r.e.op1; eres2 := r.e.op1;
     end if;
-    end if; -- pk
   end;
   
   function ld_align(data : dcdtype; set : std_logic_vector(DSETMSB downto 0);
@@ -3342,22 +2891,6 @@ end;
       case op is
       when FMT3 =>
         case op3 is
-		-- pk 
-	--	when WRSEC => 
-	--	  s.sec := r.x.result(0);
-		  
-		-- when "011101" => -- PK BS
-		--   s.y := r.x.op1(15) & r.x.op2(15) & r.x.op1(14) & r.x.op2(14) & r.x.op1(13) & r.x.op2(13) & r.x.op1(12) & r.x.op2(12) &
-		-- 		r.x.op1(11) & r.x.op2(11) & r.x.op1(10) & r.x.op2(10) & r.x.op1(9) & r.x.op2(9) & r.x.op1(8) & r.x.op2(8) &
-		-- 		r.x.op1(7) & r.x.op2(7) & r.x.op1(6) & r.x.op2(6) & r.x.op1(5) & r.x.op2(5) & r.x.op1(4) & r.x.op2(4) &
-		-- 		r.x.op1(3) & r.x.op2(3) & r.x.op1(2) & r.x.op2(2) & r.x.op1(1) & r.x.op2(1) & r.x.op1(0) & r.x.op2(0);
-		--   
-		-- when "011001" => -- PK INVBS
-		--   s.y := r.x.op1(30) & r.x.op1(28) & r.x.op1(26) & r.x.op1(24) & r.x.op1(22) & r.x.op1(20) & r.x.op1(18) & r.x.op1(16) &
-		-- 			r.x.op1(14) & r.x.op1(12) & r.x.op1(10) & r.x.op1(8) & r.x.op1(6) & r.x.op1(4) & r.x.op1(2) & r.x.op1(0) &
-		-- 			r.x.op2(30) & r.x.op2(28) & r.x.op2(26) & r.x.op2(24) & r.x.op2(22) & r.x.op2(20) & r.x.op2(18) & r.x.op2(16) &
-		-- 			r.x.op2(14) & r.x.op2(12) & r.x.op2(10) & r.x.op2(8) & r.x.op2(6) & r.x.op2(4) & r.x.op2(2) & r.x.op2(0);
-		  ----------------------------------
         when WRY =>
           if rd = "00000" then
             s.y := r.x.result;
@@ -3519,29 +3052,16 @@ end;
     end if;
     return(pd);
   end;
-  
-  -- pk
---  procedure gensrd(inst : word; srd : out std_ulogic) is
---    variable op  : std_logic_vector(1 downto 0);
---    variable op3 : std_logic_vector(5 downto 0);
---  begin
---    op := inst(31 downto 30);
---    op3 := inst(24 downto 19);
---    srd := '0';
---    if (op = FMT3) and (op3 = SOR) then
---      srd := '1';
---    end if;
---  end;
-  ------------------------------------------
+
   
   signal dummy : std_ulogic;
   signal cpu_index : std_logic_vector(3 downto 0);
   signal disasen : std_ulogic;
-  signal tclear0, tclear1, tclear2, tclear3 : std_logic; -- trigger support FAME
-  signal ten0, ten1, ten2, ten3 : std_logic; -- trigger support FAME
-  signal tcnt0, tcnt1, tcnt2, tcnt3 : std_logic_vector(7 downto 0); -- trigger support FAME
+  signal tclear0, tclear1, tclear2, tclear3 : std_logic; -- trigger support
+  signal ten0, ten1, ten2, ten3 : std_logic; -- trigger support
+  signal tcnt0, tcnt1, tcnt2, tcnt3 : std_logic_vector(7 downto 0); -- trigger support
 
-begin -- rtl architecture
+begin
   count_bil0 : entity work.count_bil port map(clk,rstn,cnten,bufcnt); -- bilgiday
 
   count_trig0 : entity work.count_trig port map(clk, rstn, tclear0, ten0, tcnt0); -- bilgiday_trigger_support
@@ -3549,19 +3069,19 @@ begin -- rtl architecture
   count_trig2 : entity work.count_trig port map(clk, rstn, tclear2, ten2, tcnt2); -- bilgiday_trigger_support
   count_trig3 : entity work.count_trig port map(clk, rstn, tclear3, ten3, tcnt3); -- bilgiday_trigger_support
 
-  clkout <= clk;  -- FAME
+  clkout <= clk;
   -- to disable alarm functionality 
   --alarm <= '0';
   -- else use the following
-  alarm_aesenc <= alarmin(1);  -- FAME
-  alarm_aesdec <= alarmin(2);  -- FAME
-  alarm_emsensor <= alarmin(3);  -- FAME
-  alarm_sensors <= alarmc or alarm_emsensor or alarm_aesenc or alarm_aesdec;  -- FAME
-  alarm <= (alarm_sensors or alarm_reg) xor alarmin2;  -- FAME
-  alarmout <= alarmin3 xor (alarm_sensors or alarm_reg);  -- FAME
-  alarm1_emsensor <= alarm_emsensor;  -- FAME
-  alarm2_aesenc <= alarm_aesenc;  -- FAME
-  alarm3_aesdec <= alarm_aesdec;  -- FAME
+  alarm_aesenc <= alarmin(1);
+  alarm_aesdec <= alarmin(2);
+  alarm_emsensor <= alarmin(3);
+  alarm_sensors <= alarmc or alarm_emsensor or alarm_aesenc or alarm_aesdec;
+  alarm <= (alarm_sensors or alarm_reg) xor alarmin2;
+  alarmout <= alarmin3 xor (alarm_sensors or alarm_reg);
+  alarm1_emsensor <= alarm_emsensor;
+  alarm2_aesenc <= alarm_aesenc;
+  alarm3_aesdec <= alarm_aesdec;
 
 
   --chinmay_canary : entity work.canary port map(clk, rstn, alarmc); -- chinmay -- bilgiday: enable this to use old canary sensor
@@ -3579,11 +3099,8 @@ begin -- rtl architecture
   tclear2 <= '1' when ((( r.f.pc(31 downto 2) & "00") /= r.trigger.r2)) else '0'; --trigger_support_bilgiday
   tclear3 <= '1' when ((( r.f.pc(31 downto 2) & "00") /= r.trigger.r3)) else '0'; --trigger_support_bilgiday
 
-  comb : process(bufcnt, alarm, -- FAME
-				 ico, dco, rfo, r, wpr, ir, dsur, rstn, holdn, irqi, dbgi, fpo, cpo, tbo,
-                 mulo, divo, dummy, rp, BPRED, 
-				 tcnt0, tcnt1, tcnt2, tcnt3, boot_select, invalid_bufcnt_x, invalid_bufcnt_w, calibr, obsr, alarm_reg, alarm_sensors)--,   -- FAME
-				 --srfo ) -- PK
+  comb : process(bufcnt, alarm, ico, dco, rfo, r, wpr, ir, dsur, rstn, holdn, irqi, dbgi, fpo, cpo, tbo,
+                 mulo, divo, dummy, rp, BPRED, tcnt0, tcnt1, tcnt2, tcnt3, boot_select, invalid_bufcnt_x, invalid_bufcnt_w, calibr, obsr, alarm_reg, alarm_sensors)
 
   variable ce0 : std_ulogic;
   variable ce1 : std_ulogic;
@@ -3645,8 +3162,7 @@ begin -- rtl architecture
   variable xc_result : word;
   variable xc_df_result : word;
   variable xc_waddr : std_logic_vector(9 downto 0);
-  --variable xc_exception, xc_wreg, xc_swreg : std_ulogic; -- PK added xc_swreg
-  variable xc_exception, xc_wreg : std_ulogic; -- PK added xc_swreg
+  variable xc_exception, xc_wreg : std_ulogic;
   variable xc_trap_address : pctype;
   variable xc_newtt, xc_vectt : std_logic_vector(7 downto 0);
   variable xc_trap : std_ulogic;
@@ -3717,10 +3233,9 @@ begin -- rtl architecture
 -----------------------------------------------------------------------
 -- EXCEPTION STAGE
 -----------------------------------------------------------------------
-	
+
     xc_exception := '0'; xc_halt := '0'; icnt := '0'; fcnt := '0';
     xc_waddr := (others => '0');
-	-- FAME: ------------------------------------------------------------------
     -- xc_waddr(RFBITS-1 downto 0) := r.x.ctrl.rd(RFBITS-1 downto 0);
 	
 	if ((r.x.ctrl.inst(31 downto 30) = "10") and (r.x.ctrl.inst(24 downto 19) = WRY) and r.x.ctrl.inst(29 downto 25) = "10110") then -- bilgiday asr22
@@ -3741,8 +3256,7 @@ begin -- rtl architecture
 	  xc_waddr(RFBITS-1 downto 0) := r.x.ctrl.rd(RFBITS-1 downto 0);
 	end if;
     -- xc_trap := r.x.mexc or r.x.ctrl.trap;
-	----------------------------------------------------------------------------
-    xc_trap := r.x.mexc or r.x.ctrl.trap; -- bilgiday -- pk: same as vsc
+    xc_trap := r.x.mexc or r.x.ctrl.trap; -- bilgiday
     v.x.nerror := rp.error; xc_dflushl := '0';
 
     if r.x.mexc = '1' then xc_vectt := "00" & TT_DAEX;
@@ -3757,9 +3271,7 @@ begin -- rtl architecture
     end if;
     xc_trap_address(2 downto PCLOW) := (others => '0');
     xc_wreg := '0'; v.x.annul_all := '0'; 
---	xc_swreg := '0'; -- pk
-	
-	-- FAME: ------------------------------------------------------------------
+
 	if ((r.x.ctrl.inst(31 downto 30) = "10") and (r.x.ctrl.inst(24 downto 19) = WRY) and r.x.ctrl.inst(29 downto 25) = "10110") then -- bilgiday asr22
 --		   if (invalid_bufcnt_w = '1') then
 --	  	     xc_result := r.w.result0;
@@ -3767,7 +3279,6 @@ begin -- rtl architecture
 --	  	     xc_result := r.w.result1;
 --		   end if;
 	  xc_result := r.w.result0;
-	
 	elsif ((r.x.ctrl.inst(31 downto 30) = "10") and (r.x.ctrl.inst(24 downto 19) = WRY) and r.x.ctrl.inst(29 downto 25) = "10111") then -- bilgiday asr23
 --		   if (invalid_bufcnt_w = '1') then
 --	  	     xc_result := r.w.result0;
@@ -3775,7 +3286,6 @@ begin -- rtl architecture
 --	  	     xc_result := r.w.result1;
 --		   end if;
 	  xc_result := r.w.result1;
-	--------------------------------------------------------------------------
 	elsif (not r.x.ctrl.annul and r.x.ctrl.ld) = '1' then 
       if (lddel = 2) then 
         xc_result := ld_align(r.x.data, r.x.set, r.x.dci.size, r.x.laddr, r.x.dci.signed);
@@ -3809,17 +3319,17 @@ begin -- rtl architecture
         v.x.annul_all := '1'; vir.addr := r.x.ctrl.pc;
         v.x.rstate := dsu1; v.x.npc := npc_find(r); vp.pwd := '1';
       elsif (alarm and r.w.s.et) = '1' then -- bilgiday
-		    xc_trap := '1';
-	      xc_vectt := "01100000"; -- bilgiday
-	      xc_trap_address(31 downto 2) := r.w.s.tba & xc_vectt & "00"; -- bilgiday
+		xc_trap := '1';
+	    xc_vectt := "01100000"; -- bilgiday
+	    xc_trap_address(31 downto 2) := r.w.s.tba & xc_vectt & "00"; -- bilgiday
 		-- HOLD_PP_BUFFERS = 1; -- bilgiday
         xc_exception := '1'; 
 		-- xc_result := r.x.ctrl.pc(31 downto 2) & "00";
-		    if (bufcnt = '1') then
-		       xc_result := r.x.pc1(31 downto 2) & "00";
-		    else
-		       xc_result := r.x.pc0(31 downto 2) & "00";
-		    end if;
+		if (bufcnt = '1') then
+		  xc_result := r.x.pc1(31 downto 2) & "00";
+		else
+		  xc_result := r.x.pc0(31 downto 2) & "00";
+		end if;
         xc_wreg := '0'; v.w.s.tt := xc_vectt; v.w.s.ps := r.w.s.s;
         v.w.s.s := '1'; v.x.annul_all := '1'; v.x.rstate := trap;
         xc_waddr := (others => '0');
@@ -3855,7 +3365,6 @@ begin -- rtl architecture
 		-- end if;
 	  elsif (r.x.ctrl.annul or xc_trap) = '0' then
         xc_wreg := r.x.ctrl.wreg;
---		xc_swreg := r.x.ctrl.swreg; -- pk
         sp_write (r, wpr, v.w.s, vwpr);        
         vir.pwd := '0';
         if (r.x.ctrl.pv and not r.x.debug) = '1' then
@@ -3893,19 +3402,19 @@ begin -- rtl architecture
 		  v.x.annul_all := '1';
 		  xc_exception := '1';
 		  xc_trap_address(31 downto 2) := r.w.s.tba & "01100000" & "00";
-		  else
-		    v.x.rstate := run;
+		else
+		  v.x.rstate := run;
           if (not CWPOPT) and (r.w.s.cwp = CWPMIN) then v.w.s.cwp := CWPMAX;
           else v.w.s.cwp := r.w.s.cwp - 1 ; end if;
-		  end if;
-    elsif r.w.s.et = '1' then
+		end if;
+      elsif r.w.s.et = '1' then
       -- if r.w.s.et = '1' then
         v.w.s.et := '0'; v.x.rstate := run;
         if (not CWPOPT) and (r.w.s.cwp = CWPMIN) then v.w.s.cwp := CWPMAX;
         else v.w.s.cwp := r.w.s.cwp - 1 ; end if;
-    else
+      else
         v.x.rstate := dsu1; xc_wreg := '0'; vp.error := '1';
-    end if;
+      end if;
     when dsu1 =>
       xc_exception := '1'; v.x.annul_all := '1';
       xc_trap_address(31 downto PCLOW) := r.f.pc;
@@ -3954,18 +3463,11 @@ begin -- rtl architecture
     v.w.except := xc_exception; v.w.result := xc_result;
     if (r.x.rstate = dsu2) then v.w.except := '0'; end if;
     --v.w.wa := xc_waddr(RFBITS-1 downto 0); v.w.wreg := xc_wreg and holdn;
-	v.w.wa := xc_waddr(RFBITS-1 downto 0); 
-	v.w.wreg := xc_wreg and (alarm or holdn); --chinmay
+	v.w.wa := xc_waddr(RFBITS-1 downto 0); v.w.wreg := xc_wreg and (alarm or holdn); --chinmay
 	
 
     rfi.diag <= dco.testen & dco.scanen & "00";
     rfi.wdata <= xc_result; rfi.waddr <= xc_waddr;
-	
-	-- pk: transfer data from insecure part to secure reg file
---	v.w.swreg := xc_swreg and holdn;
-	--srfi.wdata <= xc_result; srfi.waddr <= xc_waddr;
-	--srfi.wren <= (xc_wreg and holdn) and not dco.scanen; -- (xc_swreg and holdn) and not dco.scanen;
-	----------------------------------------------------------
 
     irqo.intack <= r.x.intack and holdn;
     irqo.irl <= r.w.s.tt(3 downto 0);
@@ -4015,7 +3517,6 @@ begin -- rtl architecture
 -- MEMORY STAGE
 -----------------------------------------------------------------------
 
-	v.x.op1 := r.m.op1; v.x.op2 := r.m.op2; -- pk
     v.x.ctrl := r.m.ctrl; v.x.dci := r.m.dci;
     v.x.ctrl.rett := r.m.ctrl.rett and not r.m.ctrl.annul;
     v.x.mac := r.m.mac; v.x.laddr := r.m.result(1 downto 0);
@@ -4025,7 +3526,7 @@ begin -- rtl architecture
     if CASAEN and (r.m.casa = '1') and (r.m.ctrl.cnt = "00") then
       v.x.ctrl.inst(4 downto 0) := r.a.ctrl.inst(4 downto 0); -- restore rs2 for trace log
     end if;
-	-- PK: selects the result of the mul / div
+
     mul_res(r, v.w.s.asr18, v.x.result, v.x.y, me_asr18, me_icc);
 
 
@@ -4075,7 +3576,7 @@ begin -- rtl architecture
         v.x.ctrl.trap := '0'; v.x.ctrl.annul := '1';
     end if;
     
-    dci.maddress <= r.m.result;
+      dci.maddress <= r.m.result;
     dci.enaddr   <= r.m.dci.enaddr and (not alarm);
     dci.asi      <= r.m.dci.asi;
     dci.size     <= r.m.dci.size;
@@ -4104,7 +3605,6 @@ begin -- rtl architecture
 -- EXECUTE STAGE
 -----------------------------------------------------------------------
 
-	v.m.op1 := r.e.op1; v.m.op2 := r.e.op2; -- pk
     v.m.ctrl := r.e.ctrl; ex_op1 := r.e.op1; ex_op2 := r.e.op2;
     v.m.ctrl.rett := r.e.ctrl.rett and not r.e.ctrl.annul;
     v.m.ctrl.wreg := r.e.ctrl.wreg and not v.x.annul_all;
@@ -4134,11 +3634,8 @@ begin -- rtl architecture
 
     dcache_gen(r, v, ex_dci, ex_link_pc, ex_jump, ex_force_a2, ex_load, v.m.casa);
     ex_jump_address := ex_add_res(32 downto PCLOW+1);
-    logic_op(r, ex_op1, ex_op2, v.x.y, ex_shift_res, ex_ymsb, ex_logic_res, v.m.y);
-	-- PK
-	shift_op(r, ex_op1, ex_op2, ex_shcnt, ex_sari, ex_shift_res);
-	-----------------
-    -- pk ex_shift_res := shift(r, ex_op1, ex_op2, ex_shcnt, ex_sari);
+    logic_op(r, ex_op1, ex_op2, v.x.y, ex_ymsb, ex_logic_res, v.m.y);
+    ex_shift_res := shift(r, ex_op1, ex_op2, ex_shcnt, ex_sari);
     misc_op(r, wpr, ex_op1, ex_op2, xc_df_result, v.x.y, ex_misc_res, ex_edata);
     ex_add_res(3):= ex_add_res(3) or ex_force_a2;    
     alu_select(r, ex_add_res, ex_op1, ex_op2, ex_shift_res, ex_logic_res,
@@ -4187,9 +3684,9 @@ begin -- rtl architecture
     exception_detect(r, wpr, dbgi, r.a.ctrl.trap, r.a.ctrl.tt, 
                      v.e.ctrl.trap, v.e.ctrl.tt);
     op_mux(r, rfo.data1, ex_result3, v.x.result, xc_df_result, zero32, 
-        r.a.rsel1, v.e.ldbp1, ra_op1, '0');--, srfo.data1); -- pk added srfo.data1
+        r.a.rsel1, v.e.ldbp1, ra_op1, '0');
     op_mux(r, rfo.data2,  ex_result3, v.x.result, xc_df_result, r.a.imm, 
-        r.a.rsel2, ex_ldbp2, ra_op2, '1');--, srfo.data2); -- pk added srfo.data2
+        r.a.rsel2, ex_ldbp2, ra_op2, '1');
     alu_op(r, ra_op1, ra_op2, v.m.icc, v.m.y(0), ex_ldbp2, v.e.op1, v.e.op2,
            v.e.aluop, v.e.alusel, v.e.aluadd, v.e.shcnt, v.e.sari, v.e.shleft,
            v.e.ymsb, v.e.mul, ra_div, v.e.mulstep, v.e.mac, v.e.ldbp2, v.e.invop2
@@ -4240,12 +3737,8 @@ begin -- rtl architecture
     v.a.rfa1 := de_raddr1(RFBITS-1 downto 0); 
     v.a.rfa2 := de_raddr2(RFBITS-1 downto 0); 
 
-   -- rd_gen(r, de_inst, v.a.ctrl.wreg, v.a.ctrl.swreg, v.a.ctrl.ld, de_rd); -- pk added v.a.ctrl.swreg
-    rd_gen(r, de_inst, v.a.ctrl.wreg, v.a.ctrl.ld, de_rd); -- pk added v.a.ctrl.swreg
-    -- pk: generate secure read
---	gensrd(de_inst, v.a.srd);
-	---------------------------
-	regaddr(de_cwp, de_rd, v.a.ctrl.rd);
+    rd_gen(r, de_inst, v.a.ctrl.wreg, v.a.ctrl.ld, de_rd);
+    regaddr(de_cwp, de_rd, v.a.ctrl.rd);
     
     fpbranch(de_inst, fpo.cc, de_fbranch);
     fpbranch(de_inst, cpo.cc, de_cbranch);
@@ -4275,18 +3768,11 @@ begin -- rtl architecture
     --       
     de_inull := de_inull or alarm; -- bilgiday: to solve bug
     v.d.inull := ra_inull_gen(r, v);
-     
---    op_find(r, v.a.ldchkra, v.a.ldchkex, v.a.rs1, v.a.rfa1, 
-  --          false, v.a.rfe1, v.a.rsel1, v.a.ldcheck1, v.a.srd); -- pk added v.a.srd
     
     op_find(r, v.a.ldchkra, v.a.ldchkex, v.a.rs1, v.a.rfa1, 
-            false, v.a.rfe1, v.a.rsel1, v.a.ldcheck1); -- pk added v.a.srd
-     
-   -- op_find(r, v.a.ldchkra, v.a.ldchkex, de_rs2, v.a.rfa2, 
-     --       imm_select(de_inst), v.a.rfe2, v.a.rsel2, v.a.ldcheck2, '0'); -- pk added '0'
-
+            false, v.a.rfe1, v.a.rsel1, v.a.ldcheck1);
     op_find(r, v.a.ldchkra, v.a.ldchkex, de_rs2, v.a.rfa2, 
-            imm_select(de_inst), v.a.rfe2, v.a.rsel2, v.a.ldcheck2); -- pk added '0'
+            imm_select(de_inst), v.a.rfe2, v.a.rsel2, v.a.ldcheck2);
 
 
     v.a.ctrl.wicc := v.a.ctrl.wicc and (not v.a.ctrl.annul) 
@@ -4323,15 +3809,7 @@ begin -- rtl architecture
       end if;
       v.d.step := dbgi.step and not r.d.annul;      
     end if;
-	
-	-- pk: outputs to secure reg file
-	--srfi.raddr1 <= de_raddr1; 
-	--srfi.raddr2 <= de_raddr2;
-	--srfi.ren1 <= de_ren1 and not dco.scanen;
-	--srfi.ren2 <= de_ren2 and not dco.scanen;
-	--srfi.diag <= dco.testen & "000";
-	---------------------------------
-	
+
     --rfi.wren <= (xc_wreg and (alarm or holdn)) and not dco.scanen;
     rfi.wren <= (xc_wreg and (alarm or holdn)) and not dco.scanen; --chinmay
     rfi.raddr1 <= de_raddr1; rfi.raddr2 <= de_raddr2;
@@ -4652,22 +4130,10 @@ begin -- rtl architecture
       fpi <= vfpi;
       cpi <= vfpi;      -- dummy, just to kill some warnings ...
     end if;
-	-- pk: ctrl of secure pipeline
-	--spipe.rsel1  <= r.a.rsel1;
-	--spipe.rsel2  <= r.a.rsel2;
-	--spipe.imm    <= r.a.imm;
-	--spipe.aluop  <= r.e.aluop;
-	--spipe.alusel <= r.e.alusel;
-	--spipe.shleft <= r.e.shleft;
-	--spipe.shcnt  <= r.e.shcnt;
-	--spipe.sari   <= r.e.sari;
-	--spipe.smode  <= r.w.s.sec;
-	--spipe.swreg  <= (xc_swreg and holdn) and not dco.scanen;
-	--srdo         <= r.a.srd;
-	----------------------------------------------------------
+
   end process;
   
-  invalidbufx : process (clk) -- bilgiday to solve bug
+ invalidbufx : process (clk) -- bilgiday to solve bug
   begin 
     if rising_edge(clk) then 
       if rstn = '0' then
@@ -4680,7 +4146,7 @@ begin -- rtl architecture
    end if;
   end process;
 
-  invalidbufw : process (clk) -- bilgiday to solve bug
+ invalidbufw : process (clk) -- bilgiday to solve bug
   begin 
     if rising_edge(clk) then 
       if rstn = '0' then
@@ -4786,7 +4252,7 @@ begin -- rtl architecture
 		obsr.r12 <= r.e.ctrl.cnt & r.e.ctrl.rd & r.e.ctrl.tt & r.e.ctrl.trap & r.e.ctrl.annul & r.e.ctrl.wreg & r.e.ctrl.wicc & r.e.ctrl.wy & r.e.ctrl.ld & r.e.ctrl.pv & r.e.ctrl.rett & "00000000";
 		obsr.r13 <= r.e.op1;
 		obsr.r14 <= r.e.op2;
-		obsr.r15 <= r.e.aluop & r.e.alusel & r.e.aluadd & r.e.alucin & r.e.ldbp1 & r.e.ldbp2 & r.e.invop2 & r.e.shcnt & r.e.sari & r.e.shleft & r.e.ymsb & r.e.rd & r.e.jmpl & r.e.su & r.e.et & r.e.cwp & "00"; -- Pantea "000"->"00"
+		obsr.r15 <= r.e.aluop & r.e.alusel & r.e.aluadd & r.e.alucin & r.e.ldbp1 & r.e.ldbp2 & r.e.invop2 & r.e.shcnt & r.e.sari & r.e.shleft & r.e.ymsb & r.e.rd & r.e.jmpl & r.e.su & r.e.et & r.e.cwp & "000";
 		obsr.r16 <= r.e.icc & r.e.mulstep & r.e.mul & r.e.mac & r.e.bp & r.e.rfe1 & r.e.rfe2 & "0000000000000000000000";
 		obsr.r17 <= r.m.ctrl.pc(31 downto 2) & "00";
 		obsr.r18 <= r.m.ctrl.inst;
@@ -4873,7 +4339,6 @@ begin -- rtl architecture
           end if;
         else  
           r.w.s.s <= '1'; r.w.s.ps <= '1'; 
-		 -- r.w.s.sec <= '0'; -- pk
           if need_extra_sync_reset(fabtech) /= 0 then 
             r.d.inst <= (others => (others => '0'));
             r.x.mexc <= '0';
@@ -4981,4 +4446,3 @@ begin -- rtl architecture
   end generate;
 
 end;
-

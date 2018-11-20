@@ -107,18 +107,6 @@ constant SAVE     : op3_type := "111100";
 constant RESTORE  : op3_type := "111101";
 constant UMAC     : op3_type := "111110";
 constant SMAC     : op3_type := "111111";
--- PK
---constant WRSEC    : op3_type := "101111"; -- write secure_mode_register
---constant ORS    : op3_type := "101110"; -- transfer data from normal rf to secure rf
---constant SOR    : op3_type := "101101"; -- transfer data from secure rf to normal rf
-constant TIBSROT : op3_type := "001001"; -- BS 2/4bit rotation
-constant TIBS : op3_type := "011101"; -- BS generator instruction
-constant INVTIBS : op3_type := "011001"; -- Inv of BS generator
-constant ANDOR : op3_type := "101100"; -- AND-OR cross instruction
-constant ORAND : op3_type := "101101"; -- OR-AND cross instruction
-constant RED   : op3_type := "001101"; -- Redundancy Generator instruction
-constant FTCHK   : op3_type := "101110"; -- Fault Detector instruction
-
 
 constant LD       : op3_type := "000000";
 constant LDUB     : op3_type := "000001";
@@ -159,18 +147,6 @@ constant STCSR    : op3_type := "110101";
 constant STDCQ    : op3_type := "110110";
 constant STDC     : op3_type := "110111";
 constant CASA     : op3_type := "111100";
-
--- pk
-constant ANDC8     : op3_type := "001000";
-constant ANDC16    : op3_type := "001011";
-constant XORC8     : op3_type := "001100";
-constant XORC16    : op3_type := "001110";
-constant XNORC8    : op3_type := "011000";
-constant XNORC16   : op3_type := "011011";
-
--- PK
---constant LDS      : op3_type := "000100"; -- load memory to secure reg file
---constant STS      : op3_type := "001000"; -- store secure reg file to memory
 
 -- bicc decoding (inst(27 downto 25))
 
