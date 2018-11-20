@@ -19,8 +19,8 @@ export PATH=$PATH:/cygdrive/c/intelFPGA_lite/17.0/quartus/bin64:/cygdrive/c/Xili
 Detailed Pin mapping and functions of pins provided inside the each FPGA port subdirectory.
 
 Steps for running sample programs on FAMEv2 after programming the FPGA board:
-1. Sample software programs and the API library is available in software/. Sample programs: hello_world, coprocessor_test and gptimer_irq_gpio_test.
-2. Navigate to the program directory and execute make. If the compiler is not found, install GRTools from the Gaisler website which includes the cross compiler for SPARC V8.
+1. Sample software programs and the API library is available in software/. Sample programs: hello_world, aesdemo, gptimerdemo, keymilldemo and gpio.
+2. Navigate to the API directory and execute make compile. Then navigate to the sample program directory and execute make. If the compiler is not found, install GRTools from the Gaisler website which includes the cross compiler for SPARC V8.
 3. The GRTools package also includes the GRMON(a debug monitor that connects to the DSU). Navigate to the GRMON directory and copy the executable of the software program to this directory
 4. Connect to the FAMEv2 design using the following command on Cygwin: ./grmon.exe -u -uart //./com7. Change the COM port in the command according to COM port occupied by the USBtoUART convertor.
 5. Confirm whether the design is detected by using the GRMON output on the relevant designs/leon3-($platform) README. 
