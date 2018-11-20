@@ -1,7 +1,7 @@
-vlog_aes.v
-aes_cipher_top.v
-aes_inv_cipher_top.v
+vlog_aes_wrap.v
+aes_core.v
+aes_encipher_block.v
+aes_key_mem.v
+aes_decipher_block.v
 aes_inv_sbox.v
 aes_sbox.v
-aes_key_expand_128.v
-aes_rcon.v

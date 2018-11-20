@@ -29,7 +29,7 @@ end;
 
 architecture rtl of apb_aes is
 	-- component to be interfaced to GRLIB
-	component vlog_aes_wrap 
+	component vlog_aes 
 		generic (
 			vpindex : integer := pindex;
 			vpaddress : integer := paddr;
@@ -55,7 +55,7 @@ architecture rtl of apb_aes is
 			
 			-- Add core-specific ports
 			);
-	end component vlog_aes_wrap;
+	end component vlog_aes;
 	
 	-- plug&play information
 	constant REVISION : integer := 0;
@@ -70,7 +70,7 @@ begin
 	apbo.pconfig <= PCONFIG; -- Config constant
 
 	-- instantiate Verilog Component
-	v0: vlog_aes_wrap
+	v0: vlog_aes
 		port map(
 			vrst          => rst,
 			vclk          => clk,
