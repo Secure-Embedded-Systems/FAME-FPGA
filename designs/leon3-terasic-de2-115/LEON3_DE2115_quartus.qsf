@@ -434,15 +434,17 @@ set_global_assignment -name VHDL_FILE ../../lib/esa/memoryctrl/memoryctrl.vhd -l
 set_global_assignment -name VHDL_FILE ../../lib/esa/memoryctrl/mctrl.vhd -library esa
 set_global_assignment -name VHDL_FILE ../../lib/coprocessors/examplevhd/examplevhd.vhd -library coprocessors
 set_global_assignment -name VHDL_FILE ../../lib/coprocessors/examplevhd/apb_example.vhd -library coprocessors
-set_global_assignment -name VERILOG_FILE ../../lib/coprocessors/aes/vlog_aes.v -library coprocessors
-set_global_assignment -name VERILOG_FILE ../../lib/coprocessors/aes/aes_cipher_top.v -library coprocessors
-set_global_assignment -name VERILOG_FILE ../../lib/coprocessors/aes/aes_inv_cipher_top.v -library coprocessors
-set_global_assignment -name VERILOG_FILE ../../lib/coprocessors/aes/aes_inv_sbox.v -library coprocessors
-set_global_assignment -name VERILOG_FILE ../../lib/coprocessors/aes/aes_sbox.v -library coprocessors
-set_global_assignment -name VERILOG_FILE ../../lib/coprocessors/aes/aes_key_expand_128.v -library coprocessors
-set_global_assignment -name VERILOG_FILE ../../lib/coprocessors/aes/aes_rcon.v -library coprocessors
-set_global_assignment -name VHDL_FILE ../../lib/coprocessors/aes/aes.vhd -library coprocessors
-set_global_assignment -name VHDL_FILE ../../lib/coprocessors/aes/apb_aes.vhd -library coprocessors
+
+set_global_assignment -name VHDL_FILE ../../lib/coprocessors/aes/aes.vhd       -library coprocessors         
+set_global_assignment -name VERILOG_FILE ../../lib/coprocessors/aes/aes_encipher_block.v   -library coprocessors
+set_global_assignment -name VERILOG_FILE ../../lib/coprocessors/aes/vlog_aes_wrap.v -library coprocessors
+set_global_assignment -name VERILOG_FILE ../../lib/coprocessors/aes/aes_core.v      -library coprocessors       
+set_global_assignment -name VERILOG_FILE ../../lib/coprocessors/aes/aes_inv_sbox.v    -library coprocessors     
+set_global_assignment -name VERILOG_FILE ../../lib/coprocessors/aes/aes_sbox.v    -library coprocessors
+set_global_assignment -name VERILOG_FILE ../../lib/coprocessors/aes/aes_decipher_block.v   -library coprocessors
+set_global_assignment -name VERILOG_FILE ../../lib/coprocessors/aes/aes_key_mem.v   -library coprocessors       
+set_global_assignment -name VHDL_FILE ../../lib/coprocessors/aes/apb_aes.vhd   -library coprocessors
+
 set_global_assignment -name VERILOG_FILE ../../lib/coprocessors/aes_em/vlog_aes_em.v -library coprocessors
 set_global_assignment -name VERILOG_FILE ../../lib/coprocessors/aes_em/aes_cipher_top_em.v -library coprocessors
 set_global_assignment -name VERILOG_FILE ../../lib/coprocessors/aes_em/aes_inv_cipher_top_em.v -library coprocessors

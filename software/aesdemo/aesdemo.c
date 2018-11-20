@@ -1,115 +1,136 @@
-#include "aescoproc.h"
 #include <stdio.h>
+#include "aescoproc.h"
 
-  /* test values for AES128 ECB
+int main() {
 
-  KEY 2B7E1516 28AED2A6 ABF71588 09CF4F3C
+  unsigned key[4] = {0, 0, 0, 0};
+  unsigned pt[4]  = {0xFFFFFFFF,
+		     0xFFFFFFFF,
+		     0xFFFFFFFF,
+		     0xFFFFFFFF};
+  unsigned ct[4];
+  unsigned ecb_ct_exp[4] = {0x3F5B8CC9,
+			    0xEA855A0A,
+			    0xFA7347D2,
+			    0x3E8D664E};
+  unsigned ecb_pt_exp[4] = {0xFFFFFFFF,
+			    0xFFFFFFFF,
+			    0xFFFFFFFF,
+			    0xFFFFFFFF};
+
+  // ECB encrypt
+  aes_set_key(key);
+  aes_set_input_data(pt);
+  aes_encrypt_ecb();
+  aes_get_output_data(ct);
+
+  printf("ECB Encrypt %8x %8x %8x %8x\n", ct[0], ct[1], ct[2], ct[3]);
+  printf("    correct %8d %8d %8d %8d\n",
+	 (ecb_ct_exp[0]==ct[0]),
+	 (ecb_ct_exp[1]==ct[1]),
+	 (ecb_ct_exp[2]==ct[2]),
+	 (ecb_ct_exp[3]==ct[3]));
+  
+  aes_soft_reset();
     
-PLAIN 6BC1BEE2 2E409F96 E93D7E11 7393172A
-      AE2D8A57 1E03AC9C 9EB76FAC 45AF8E51
-      30C81C46 A35CE411 E5FBC119 1A0A52EF
-      F69F2445 DF4F9B17 AD2B417B E66C3710
-   
-CIPHR 3AD77BB4 0D7A3660 A89ECAF3 2466EF97
-      F5D3D585 03B9699D E785895A 96FDBAAF
-      43B1CD7F 598ECE23 881B00E3 ED030688
-      7B0C785E 27E8AD3F 82232071 04725DD4
-    
-  */
+  // ECB decrypt
+  aes_set_key(key);
+  aes_set_input_data(ct);
+  aes_decrypt_ecb();
+  aes_get_output_data(pt);
 
-  /* test values for AES128 CBC
+  printf("ECB Decrypt %8x %8x %8x %8x\n", pt[0], pt[1], pt[2], pt[3]);
+  printf("    correct %8d %8d %8d %8d\n",
+	 (pt[0]==ecb_pt_exp[0]),
+	 (pt[1]==ecb_pt_exp[1]),
+	 (pt[2]==ecb_pt_exp[2]),
+	 (pt[3]==ecb_pt_exp[3]));
+  
+  aes_soft_reset();
 
-  IV is 00010203 04050607 08090A0B 0C0D0E0F
 
-  KEY   2B7E1516 28AED2A6 ABF71588 09CF4F3C
+  // CBC encrypt
+  unsigned cbc_key[4] = {0x01234567,
+			 0x89ABCDEF,
+			 0x01234567,
+			 0x89ABCDEF};
+  unsigned cbc_pt[8]  = {0xF0F4FFFF,
+			 0x1FF2FF0F,
+			 0xFFFF2FF0,
+			 0xEF9FF3FF,
+			 0xF0F4FFFF,
+			 0x1F02FF01,
+			 0xFF4F2FF0,
+			 0xEF9FF3FE};
+  unsigned cbc_iv[4]  = {0xB000000E,
+			 0x00000000,
+			 0x30000000,
+			 0x0000000F};
+  unsigned cbc_ct_exp[8]={0xAF1C884A,
+			  0xE3D5AA40,
+			  0x88695A72,
+			  0xA5B94DFD,
+			  0x3F31583F,
+			  0xE602C372,
+			  0xC0187C6B,
+			  0xF1F73E91};
 
-  PLAIN 6BC1BEE2 2E409F96 E93D7E11 7393172A
-        AE2D8A57 1E03AC9C 9EB76FAC 45AF8E51
-        30C81C46 A35CE411 E5FBC119 1A0A52EF
-        F69F2445 DF4F9B17 AD2B417B E66C3710
+  aes_set_key(cbc_key);
+  aes_set_iv(cbc_iv);
+  aes_set_input_data(&(cbc_pt[0]));
+  aes_encrypt_cbc();
+  aes_get_output_data(ct);
+  
+  printf("CBC Encrypt %8x %8x %8x %8x\n", ct[0], ct[1], ct[2], ct[3]);
+  printf("    correct %8d %8d %8d %8d\n",
+	 (ct[0]==cbc_ct_exp[0]),
+	 (ct[1]==cbc_ct_exp[1]),
+	 (ct[2]==cbc_ct_exp[2]),
+	 (ct[3]==cbc_ct_exp[3]));
 
-CIPHER  7649ABAC 8119B246 CEE98E9B 12E9197D
-        5086CB9B 507219EE 95DB113A 917678B2
-        73BED6B8 E3C1743B 7116E69E 22229516
-        3FF1CAA1 681FAC09 120ECA30 7586E1A7 
-  */
+  aes_set_input_data(&(cbc_pt[4]));
+  aes_encrypt_cbc();
+  aes_get_output_data(ct);
 
-void show(char *s, unsigned a[4]) {
-  unsigned cnt;
-  printf("%s ", s);
-  for (cnt = 0; cnt<4; cnt++)
-    printf("%8X", a[cnt]);
-  printf("\n");
+  printf("CBC Encrypt %8x %8x %8x %8x\n", ct[0], ct[1], ct[2], ct[3]);
+  printf("    correct %8d %8d %8d %8d\n",
+	 (ct[0]==cbc_ct_exp[4]),
+	 (ct[1]==cbc_ct_exp[5]),
+	 (ct[2]==cbc_ct_exp[6]),
+	 (ct[3]==cbc_ct_exp[7]));
+
+  aes_soft_reset();
+
+  // CBC Decrypt
+  unsigned cbc_ct[8]  = {0xF0F4FFFF, 0x1FF2FF0F, 0xFFFF2FF0, 0xEF9FF3FF,
+			 0xF0F4FFFF, 0x1F02FF01, 0xFF4F2FF0, 0xEF9FF3FE};
+  unsigned cbc_pt_exp[8]={0xC513746E, 0xE855E195, 0x260A2B99, 0x261A463F,    
+			  0xA323C5F6, 0x2F761C25, 0x1B79CADA, 0xA98EF692};
+
+  aes_set_key(cbc_key);
+  aes_set_iv(cbc_iv);
+  aes_set_input_data(&(cbc_ct[0]));
+  aes_decrypt_cbc();
+  aes_get_output_data(pt);
+
+  printf("CBC Decrypt %8x %8x %8x %8x\n", pt[0], pt[1], pt[2], pt[3]);
+  printf("    correct %8d %8d %8d %8d\n",
+	 (pt[0]==cbc_pt_exp[0]),
+	 (pt[1]==cbc_pt_exp[1]),
+	 (pt[2]==cbc_pt_exp[2]),
+	 (pt[3]==cbc_pt_exp[3]));
+
+  aes_set_input_data(&(cbc_ct[4]));
+  aes_decrypt_cbc();
+  aes_get_output_data(pt);
+
+  printf("CBC Decrypt %8x %8x %8x %8x\n", pt[0], pt[1], pt[2], pt[3]);
+  printf("    correct %8d %8d %8d %8d\n",
+	 (pt[0]==cbc_pt_exp[4]),
+	 (pt[1]==cbc_pt_exp[5]),
+	 (pt[2]==cbc_pt_exp[6]),
+	 (pt[3]==cbc_pt_exp[7]));
+  
+  return 0;
 }
 
-unsigned diff(unsigned a[4], unsigned b[4]) {
-  unsigned cnt, chk = 0;
-  for (cnt = 0; cnt<4; cnt++)
-    if (a[cnt] != b[cnt])
-      chk++;
-  return (chk > 0);
-}
-
-int main() {  
-  unsigned key[4]    = {0x2B7E1516, 0x28AED2A6, 0xABF71588, 0x09CF4F3C};
-  unsigned plain1[4] = {0x6BC1BEE2, 0x2E409F96, 0xE93D7E11, 0x7393172A};
-  unsigned plain2[4] = {0xAE2D8A57, 0x1E03AC9C, 0x9EB76FAC, 0x45AF8E51};   
-  unsigned ecbct1[4] = {0x3AD77BB4, 0x0D7A3660, 0xA89ECAF3, 0x2466EF97};
-  unsigned ecbct2[4] = {0xF5D3D585, 0x03B9699D, 0xE785895A, 0x96FDBAAF};
-  unsigned tmp[4];
-  unsigned cnt, chk;
-  
-  //------------ ECB encryption test
-  aes_set_encrypt_key(key);
-  aes_set_ecb_encrypt_data(plain1);
-  aes_start_encrypt();
-  while (! aes_done_encrypt()) ;
-
-  aes_get_encrypt_data(tmp);
-
-  if (diff(tmp, ecbct1)) {
-    printf("ECB Encryption 1 fails\n");
-    show("GOT ", tmp);
-    show("EXP ", ecbct1);
-  }
-  
-  aes_set_ecb_encrypt_data(plain2);
-  aes_start_encrypt();
-  while (! aes_done_encrypt()) ;
-
-  aes_get_encrypt_data(tmp);
-
-  if (diff(tmp, ecbct2)) {
-    printf("ECB Encryption 2 fails\n");
-    show("GOT ", tmp);
-    show("EXP ", ecbct2);
-  }
-  
-  //------------ ECB decryption test
-  aes_set_decrypt_key(key);
-  aes_set_decrypt_data(ecbct1);
-  aes_start_decrypt();
-  while (! aes_done_decrypt()) ;
-
-  aes_get_ecb_decrypt_data(tmp);
-  
-  if (diff(tmp, plain1)) {
-    printf("ECB Decryption 1 fails\n");
-    show("GOT ", tmp);
-    show("EXP ", plain1);
-  }
-  
-  aes_set_decrypt_key(key);
-  aes_set_decrypt_data(ecbct2);
-  aes_start_decrypt();
-  while (! aes_done_decrypt()) ;
-
-  aes_get_ecb_decrypt_data(tmp);
-  
-  if (diff(tmp, plain2)) {
-    printf("ECB Decryption 2 fails\n");
-    show("GOT ", tmp);
-    show("EXP ", plain2);
-  }
-  
-}
