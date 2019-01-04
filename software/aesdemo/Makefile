@@ -5,6 +5,7 @@ CFLAGS=-I../API/include
 
 aesdemo: aesdemo.c
 	$(CC) $(CFLAGS) -c aesdemo.c -o aesdemo.o
+	$(CC) $(CFLAGS) -c -S aesdemo.c -o aesdemo.s
 	$(CC) aesdemo.o -o aesdemo $(LDFLAGS)
 
 clean:

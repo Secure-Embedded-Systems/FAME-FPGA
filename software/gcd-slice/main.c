@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include "uart.h"
-#include "gptimer.h"
+//#include "uart.h"
+//#include "gptimer.h"
 
 //int __bcc_con_outbyte(char c) {
 //  put_char_uart(c);
@@ -35,8 +35,8 @@ void main() {
   unsigned cnt;
   unsigned long t1, t2;
 
-  init_uart();
-  timer_start();
+  //  init_uart();
+  //  timer_start();
 
   unsigned data[32] =
     { 8 + ( 13 << 4), // 1
@@ -74,13 +74,13 @@ void main() {
 
   unsigned tdata[32];
 
-  t2 = timer_lap();
+  //  t2 = timer_lap();
   transpose(data, tdata);
-  t2 = timer_lap();
+  //  t2 = timer_lap();
   printf("Transpose %lx\n", t2);
   
-  //  for (cnt=0; cnt<32; cnt++)
-  //    printf("%5d %8x %8x\n", cnt, data[cnt], tdata[cnt]);
+    for (cnt=0; cnt<32; cnt++)
+      printf("%5d %8x %8x\n", cnt, data[cnt], tdata[cnt]);
 
   unsigned start, rst, done;
   unsigned q[32] = {0,0,0,0,0,0,0,0,
@@ -88,7 +88,7 @@ void main() {
 		    0,0,0,0,0,0,0,0,
 		    0,0,0,0,0,0,0,0};
 
-  t1 = timer_lap();
+  //  t1 = timer_lap();
   done = 0;
   cnt = 0;
   while ((cnt < 5) || (done != -1)) {
@@ -114,16 +114,16 @@ void main() {
 	   
 	cnt++;
   }
-  t2 = timer_lap();
+  //  t2 = timer_lap();
   printf("32 bitsliced GCDs computed in %lx\n", t2);
 
-  t1 = timer_lap();
+  //  t1 = timer_lap();
   transpose(q, tdata);
-  t2 = timer_lap();
+  //  t2 = timer_lap();
   printf("Transport computed in %lx\n", t2);
   
-  //  for (cnt=0; cnt<32; cnt++)
-  //    printf("%5d %8x %8x\n", cnt, q[cnt], tdata[cnt]);
+    for (cnt=0; cnt<32; cnt++)
+      printf("%5d %8x %8x\n", cnt, q[cnt], tdata[cnt]);
 
 }
 

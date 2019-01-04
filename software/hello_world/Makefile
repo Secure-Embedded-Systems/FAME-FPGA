@@ -1,7 +1,7 @@
 include ../make.swconfig
 
-LDFLAGS=-L../API/lib -lfame
-CFLAGS=-I../API/include
+LDFLAGS=-L../API/lib -lfame 
+CFLAGS=-I../API/include -mcpu=leon3
 
 hello: hello.c
 	$(CC) $(CFLAGS) -c hello.c -o hello.o
