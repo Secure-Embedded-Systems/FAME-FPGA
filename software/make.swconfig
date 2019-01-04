@@ -1,4 +1,4 @@
-CC=sparc-gaisler-elf-gcc
-CCAR=sparc-gaisler-elf-ar
-XDUMP=sparc-gaisler-elf-objdump -dS
-XCOPY=sparc-gaisler-elf-objcopy
+CC=/opt/gaisler/bcc2-local/bin/sparc-gaisler-elf-gcc
+CCAR=/opt/gaisler/bcc2-local/bin/sparc-gaisler-elf-ar
+XDUMP=/opt/gaisler/bcc2-local/bin/sparc-gaisler-elf-objdump -dS
+XCOPY=/opt/gaisler/bcc2-local/bin/sparc-gaisler-elf-objcopy
